@@ -174,7 +174,7 @@
 
         <div class="space-y-1">
             <p class="text-blue-400 font-semibold tracking-widest uppercase text-xs">A message for you</p>
-            <h1 class="text-4xl font-bold text-blue-800">Good Morning,</h1>
+            <h1 id="greeting-text" class="text-4xl font-bold text-blue-800">Good Morning,</h1>
             <h2 class="text-6xl cursive text-blue-600 pb-4">Aphiphi</h2>
         </div>
 
@@ -226,6 +226,23 @@
         ];
 
         let lastIndex = -1;
+
+        // Fungsi untuk mengatur sapaan berdasarkan waktu
+        function setGreeting() {
+            const greetingElement = document.getElementById('greeting-text');
+            const hour = new Date().getHours();
+            let greeting = "Good Morning,";
+
+            if (hour >= 12 && hour < 17) {
+                greeting = "Good Afternoon,";
+            } else if (hour >= 17 && hour < 21) {
+                greeting = "Good Evening,";
+            } else if (hour >= 21 || hour < 4) {
+                greeting = "Good Night,";
+            }
+
+            greetingElement.innerText = greeting;
+        }
 
         // Inisialisasi Galeri Modal
         const gallery = document.getElementById('gallery-container');
@@ -297,6 +314,8 @@
             }
         });
 
+        // Panggil fungsi greeting saat halaman dimuat
+        window.onload = setGreeting;
         setInterval(createParticle, 1500);
     </script>
 </body>
