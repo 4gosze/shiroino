@@ -121,9 +121,8 @@
             overflow-y: auto;
             padding: 2rem;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            /* Menyembunyikan scrollbar untuk Chrome, Safari, dan Opera */
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         .modal-content::-webkit-scrollbar {
@@ -153,19 +152,14 @@
 
     <!-- Main Card -->
     <div class="glass p-10 rounded-[2.5rem] max-w-md w-full text-center z-10 floating" id="main-card">
+        
         <div class="mb-8 flex justify-center">
             <div class="relative">
                 <div class="bg-blue-50 p-6 rounded-full relative z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-blue-500" style="animation: spin 12s linear infinite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg id="weather-icon" xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-blue-500" style="animation: spin 12s linear infinite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Ikon default (Matahari) -->
                         <circle cx="12" cy="12" r="4"></circle>
-                        <path d="M12 2v2"></path>
-                        <path d="M12 20v2"></path>
-                        <path d="M4.93 4.93l1.41 1.41"></path>
-                        <path d="M17.66 17.66l1.41 1.41"></path>
-                        <path d="M2 12h2"></path>
-                        <path d="M20 12h2"></path>
-                        <path d="M6.34 17.66l-1.41 1.41"></path>
-                        <path d="M19.07 4.93l-1.41 1.41"></path>
+                        <path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93l1.41 1.41"></path><path d="M17.66 17.66l1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M6.34 17.66l-1.41 1.41"></path><path d="M19.07 4.93l-1.41 1.41"></path>
                     </svg>
                 </div>
                 <div class="absolute inset-0 bg-blue-400 rounded-full opacity-20 scale-125 animate-ping"></div>
@@ -227,18 +221,30 @@
 
         let lastIndex = -1;
 
-        // Fungsi untuk mengatur sapaan berdasarkan waktu
+        // Fungsi untuk mengatur sapaan dan ikon berdasarkan waktu
         function setGreeting() {
             const greetingElement = document.getElementById('greeting-text');
+            const weatherIcon = document.getElementById('weather-icon');
             const hour = new Date().getHours();
+            
             let greeting = "Good Morning,";
-
+            
+            // Logika ganti teks sapaan dan ikon
             if (hour >= 12 && hour < 17) {
                 greeting = "Good Afternoon,";
-            } else if (hour >= 17 && hour < 21) {
+                // Ikon Matahari Siang
+                weatherIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><path d="M12 1v2"></path><path d="M12 21v2"></path><path d="M4.22 4.22l1.42 1.42"></path><path d="M18.36 18.36l1.42 1.42"></path><path d="M1 12h2"></path><path d="M21 12h2"></path><path d="M4.22 19.78l1.42-1.42"></path><path d="M18.36 5.64l1.42-1.42"></path>`;
+            } else if (hour >= 17 && hour < 20) {
                 greeting = "Good Evening,";
-            } else if (hour >= 21 || hour < 4) {
+                // Ikon Bulan Sabit Malam
+                weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>`;
+            } else if (hour >= 20 || hour < 4) {
                 greeting = "Good Night,";
+                // Ikon Bulan Sabit Malam
+                weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>`;
+            } else {
+                // Ikon Matahari Pagi (Default)
+                weatherIcon.innerHTML = `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93l1.41 1.41"></path><path d="M17.66 17.66l1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M6.34 17.66l-1.41 1.41"></path><path d="M19.07 4.93l-1.41 1.41"></path>`;
             }
 
             greetingElement.innerText = greeting;
@@ -277,7 +283,6 @@
                 quoteElement.style.opacity = 1;
                 quoteElement.style.transform = 'translateY(0px)';
                 
-                // Buat partikel sparkle
                 for(let i=0; i<8; i++) { setTimeout(createParticle, i * 50); }
             }, 400);
         }
@@ -314,9 +319,10 @@
             }
         });
 
-        // Panggil fungsi greeting saat halaman dimuat
-        window.onload = setGreeting;
-        setInterval(createParticle, 1500);
+        window.onload = () => {
+            setGreeting();
+            setInterval(createParticle, 1500);
+        };
     </script>
 </body>
 </html>
