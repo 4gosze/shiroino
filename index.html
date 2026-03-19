@@ -10,9 +10,13 @@
 
         body {
             font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 50%, #e0f2fe 100%);
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
         }
 
         .cursive {
@@ -20,10 +24,12 @@
         }
 
         .glass {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .floating {
@@ -31,146 +37,267 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(1deg); }
+            66% { transform: translateY(-5px) rotate(-1deg); }
         }
 
         .heart {
             position: absolute;
-            color: #3b82f6;
-            opacity: 0.6;
+            color: #60a5fa;
             pointer-events: none;
             z-index: 0;
-            animation: rise 5s linear forwards;
+            filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.3));
+            animation: rise linear forwards;
         }
 
         @keyframes rise {
-            from {
-                transform: translateY(100vh) scale(0);
-                opacity: 1;
+            0% {
+                transform: translateY(110vh) translateX(0) scale(0) rotate(0deg);
+                opacity: 0;
             }
-            to {
-                transform: translateY(-10vh) scale(1.5);
+            10% {
+                opacity: 0.8;
+                transform: translateY(90vh) translateX(10px) scale(1) rotate(10deg);
+            }
+            100% {
+                transform: translateY(-20vh) translateX(-20px) scale(1.5) rotate(360deg);
                 opacity: 0;
             }
         }
 
-        .pulse-soft {
-            animation: pulse 2s infinite;
+        .sparkle-mouse {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #60a5fa;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0;
+            filter: blur(2px);
+            animation: particle-fade 0.8s ease-out forwards;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        @keyframes particle-fade {
+            from { transform: scale(1); opacity: 0.6; }
+            to { transform: scale(0.1); opacity: 0; }
+        }
+
+        #morning-quote {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #3b82f6, #60a5fa);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+        }
+
+        /* Memory Modal Styles */
+        #memory-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            /* Menyembunyikan scrollbar untuk Chrome, Safari, dan Opera */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        .modal-content::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center p-4 relative">
+<body class="p-4 relative">
 
-    <!-- Floating Background Elements -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none" id="heart-container"></div>
+    <div class="absolute inset-0 overflow-hidden pointer-events-none" id="background-layer"></div>
+
+    <!-- Memory Gallery Modal -->
+    <div id="memory-modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-blue-800">Our Memories ✨</h3>
+                <button onclick="toggleModal()" class="text-gray-400 hover:text-blue-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-4" id="gallery-container">
+                <!-- Foto diisi oleh JS -->
+            </div>
+            <p class="mt-6 text-center text-blue-400 italic text-sm">"Every picture tells a story, especially ours."</p>
+        </div>
+    </div>
 
     <!-- Main Card -->
-    <div class="glass p-8 rounded-3xl max-w-md w-full text-center z-10 floating">
-        <div class="mb-6 flex justify-center">
-            <div class="bg-blue-100 p-4 rounded-full pulse-soft">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/>
-                </svg>
+    <div class="glass p-10 rounded-[2.5rem] max-w-md w-full text-center z-10 floating" id="main-card">
+        <div class="mb-8 flex justify-center">
+            <div class="relative">
+                <div class="bg-blue-50 p-6 rounded-full relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-blue-500" style="animation: spin 12s linear infinite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2"></path>
+                        <path d="M12 20v2"></path>
+                        <path d="M4.93 4.93l1.41 1.41"></path>
+                        <path d="M17.66 17.66l1.41 1.41"></path>
+                        <path d="M2 12h2"></path>
+                        <path d="M20 12h2"></path>
+                        <path d="M6.34 17.66l-1.41 1.41"></path>
+                        <path d="M19.07 4.93l-1.41 1.41"></path>
+                    </svg>
+                </div>
+                <div class="absolute inset-0 bg-blue-400 rounded-full opacity-20 scale-125 animate-ping"></div>
             </div>
         </div>
 
-        <h1 class="text-4xl font-bold text-blue-800 mb-2">Good Morning,</h1>
-        <h2 class="text-5xl cursive text-blue-600 mb-6">Aphiphi</h2>
+        <div class="space-y-1">
+            <p class="text-blue-400 font-semibold tracking-widest uppercase text-xs">A message for you</p>
+            <h1 class="text-4xl font-bold text-blue-800">Good Morning,</h1>
+            <h2 class="text-6xl cursive text-blue-600 pb-4">Aphiphi</h2>
+        </div>
 
-        <p id="morning-quote" class="text-blue-700 text-lg italic mb-8 h-20 flex items-center justify-center">
-            "May your day be as bright as your smile this morning."
-        </p>
+        <div class="bg-white/30 rounded-2xl p-6 my-8 min-h-[120px] flex items-center justify-center border border-white/40">
+            <p id="morning-quote" class="text-blue-800 text-lg leading-relaxed font-medium">
+                "May your day be as bright as your smile this morning."
+            </p>
+        </div>
 
-        <button onclick="changeMessage()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105 active:scale-95 shadow-lg">
-            Click for Spark's ✨
-        </button>
+        <div class="flex flex-col space-y-3">
+            <button onclick="changeMessage()" class="btn-primary hover:opacity-90 text-white font-bold py-4 px-10 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-xl flex items-center justify-center mx-auto w-full space-x-2">
+                <span>Send Sparkles ✨</span>
+            </button>
+            
+            <button onclick="toggleModal()" class="btn-secondary hover:bg-blue-50 font-bold py-3 px-10 rounded-2xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center mx-auto w-full space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                <span>View Our Memories</span>
+            </button>
+        </div>
     </div>
 
-    <!-- Footer Message -->
-    <div class="mt-8 text-blue-600 text-sm opacity-70 z-10">
-        Made with ❤️ for Shiroino
+    <div class="absolute bottom-8 text-blue-400 text-xs tracking-widest uppercase font-bold opacity-60 z-10 flex items-center space-x-2">
+        <span class="w-8 h-[1px] bg-blue-300"></span>
+        <span>Made with ❤️ for Shiroino</span>
+        <span class="w-8 h-[1px] bg-blue-300"></span>
     </div>
 
     <script>
+        const myPhotos = [
+            "https://i.imgur.com/udD7Nji.png", 
+            "https://i.imgur.com/bBV9ZX4.png",
+            "https://i.imgur.com/3ZOiyZJ.png",
+            "https://i.imgur.com/HDocgJm.png",
+            "https://i.imgur.com/wqvxjIR.png",
+            "https://i.imgur.com/TvAXmIB.png"
+        ];
+        
         const messages = [
-            "Hope your day is as bright as your smile this morning. ☀️",
-            "Don't forget to eat breakfast and stay energized, babe! 💪",
+            "May your day be as bright as your smile this morning. ☀️",
+            "Don't forget to eat breakfast and stay energized, love! 💪",
             "Just wanted to say, I love you more than yesterday. ❤️",
             "Good luck with your work today, Aphiphi! ✨",
-            "Don't forget to drink plenty of water, beautiful! 💧",
-            "Whatever happens today, remember I'm always here for you. 🏠"
+            "Remember to drink plenty of water, beautiful! 💧",
+            "Whatever happens today, remember I'm always here for you. 🏠",
+            "You are amazing and you can get through this day wonderfully! 🌟",
+            "Thinking of you makes my morning so much better. 🥰",
+            "Take a deep breath. You've got this today. 🧘‍♀️",
+            "Sending you a big warm hug to start your day! 🤗"
         ];
 
         let lastIndex = -1;
 
+        // Inisialisasi Galeri Modal
+        const gallery = document.getElementById('gallery-container');
+        myPhotos.forEach(url => {
+            const div = document.createElement('div');
+            div.className = "aspect-square overflow-hidden rounded-xl bg-gray-100 shadow-inner";
+            div.innerHTML = `<img src="${url}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" onerror="this.src='https://picsum.photos/200/200'">`;
+            gallery.appendChild(div);
+        });
+
+        function toggleModal() {
+            const modal = document.getElementById('memory-modal');
+            const isVisible = modal.style.display === 'flex';
+            modal.style.display = isVisible ? 'none' : 'flex';
+        }
+
+        function closeModal(e) {
+            if(e.target.id === 'memory-modal') toggleModal();
+        }
+
         function changeMessage() {
             const quoteElement = document.getElementById('morning-quote');
             let randomIndex;
-            
-            // Ensure we don't get the same message twice in a row
-            do {
-                randomIndex = Math.floor(Math.random() * messages.length);
-            } while (randomIndex === lastIndex);
-            
+            do { randomIndex = Math.floor(Math.random() * messages.length); } while (randomIndex === lastIndex);
             lastIndex = randomIndex;
 
-            // Fade out effect
             quoteElement.style.opacity = 0;
+            quoteElement.style.transform = 'translateY(10px)';
             
             setTimeout(() => {
                 quoteElement.innerText = `"${messages[randomIndex]}"`;
                 quoteElement.style.opacity = 1;
-                createHeart();
-                createHeart();
-                createHeart();
-            }, 300);
+                quoteElement.style.transform = 'translateY(0px)';
+                
+                // Buat partikel sparkle
+                for(let i=0; i<8; i++) { setTimeout(createParticle, i * 50); }
+            }, 400);
         }
 
-        function createHeart() {
-            const container = document.getElementById('heart-container');
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            
-            // Randomly choose between heart and sparkle
-            const isHeart = Math.random() > 0.3;
-            heart.innerHTML = isHeart ? `
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            ` : `
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L9 9l-8 3 8 3 3 8 3-8 8-3-8-3-3-8z"/></svg>
-            `;
-
+        function createParticle() {
+            const container = document.getElementById('background-layer');
+            const particle = document.createElement('div');
+            particle.classList.add('heart');
+            const types = [
+                `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
+                `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L9 9l-8 3 8 3 3 8 3-8 8-3-8-3-3-8z"/></svg>`
+            ];
+            particle.innerHTML = types[Math.floor(Math.random() * types.length)];
             const startX = Math.random() * 100;
-            const size = Math.random() * 20 + 10;
-            const duration = Math.random() * 3 + 2;
-
-            heart.style.left = startX + 'vw';
-            heart.style.fontSize = size + 'px';
-            heart.style.animationDuration = duration + 's';
-            heart.style.bottom = '-50px';
-
-            container.appendChild(heart);
-
-            setTimeout(() => {
-                heart.remove();
-            }, duration * 1000);
+            const duration = 4 + Math.random() * 4;
+            const size = 0.5 + Math.random() * 1.5;
+            particle.style.left = startX + 'vw';
+            particle.style.transform = `scale(${size})`;
+            particle.style.animationDuration = duration + 's';
+            particle.style.color = `hsl(${200 + Math.random() * 30}, 80%, 70%)`;
+            container.appendChild(particle);
+            setTimeout(() => { particle.remove(); }, duration * 1000);
         }
 
-        // Periodically create hearts
-        setInterval(createHeart, 2000);
-
-        // Initial animation
-        window.onload = () => {
-            document.getElementById('morning-quote').style.transition = 'opacity 0.5s ease';
-            for(let i=0; i<5; i++) {
-                setTimeout(createHeart, i * 500);
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.85) {
+                const p = document.createElement('div');
+                p.className = 'sparkle-mouse';
+                p.style.left = e.clientX + 'px';
+                p.style.top = e.clientY + 'px';
+                p.style.background = `hsl(${190 + Math.random() * 40}, 100%, 70%)`;
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 800);
             }
-        };
+        });
+
+        setInterval(createParticle, 1500);
     </script>
 </body>
 </html>
