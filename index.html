@@ -12,11 +12,12 @@
             font-family: 'Quicksand', sans-serif;
             background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 50%, #e0f2fe 100%);
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
+            padding: 20px;
         }
 
         .cursive {
@@ -84,22 +85,16 @@
             to { transform: scale(0.1); opacity: 0; }
         }
 
-        #morning-quote {
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
         .btn-primary {
             background: linear-gradient(to right, #3b82f6, #60a5fa);
             box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
         }
 
-        .btn-secondary {
-            background: white;
-            color: #3b82f6;
-            border: 2px solid #3b82f6;
+        .btn-ai {
+            background: linear-gradient(to right, #1e3a8a, #1e40af);
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
         }
 
-        /* Memory Modal Styles */
         #memory-modal {
             display: none;
             position: fixed;
@@ -114,50 +109,69 @@
 
         .modal-content {
             background: white;
-            border-radius: 2rem;
+            border-radius: 2.5rem;
             max-width: 500px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
             padding: 2rem;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            -ms-overflow-style: none;
             scrollbar-width: none;
         }
 
-        .modal-content::-webkit-scrollbar {
-            display: none;
+        .modal-content::-webkit-scrollbar { display: none; }
+
+        .timer-badge {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
         }
+
+        .loader {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="p-4 relative">
+<body class="relative">
 
     <div class="absolute inset-0 overflow-hidden pointer-events-none" id="background-layer"></div>
 
-    <!-- Memory Gallery Modal -->
+    <!-- Memory Modal -->
     <div id="memory-modal" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-blue-800">Our Memories ✨</h3>
-                <button onclick="toggleModal()" class="text-gray-400 hover:text-blue-500 transition-colors">
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <h3 class="text-2xl font-bold text-blue-800">Our Memories ✨</h3>
+                    <p class="text-blue-400 text-sm font-medium">Since Dec 20, 2025</p>
+                </div>
+                <button onclick="toggleModal()" class="text-gray-400 hover:text-blue-500 transition-colors p-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
                 </button>
             </div>
-            <div class="grid grid-cols-2 gap-4" id="gallery-container">
-                <!-- Foto diisi oleh JS -->
+
+            <div class="timer-badge rounded-2xl p-4 mb-6 text-center shadow-sm">
+                <div id="lifetime-timer" class="text-blue-800 font-bold text-xl tabular-nums">0d 0h 0m 0s</div>
             </div>
+
+            <div class="grid grid-cols-2 gap-4" id="gallery-container"></div>
             <p class="mt-6 text-center text-blue-400 italic text-sm">"Every picture tells a story, especially ours."</p>
         </div>
     </div>
 
     <!-- Main Card -->
-    <div class="glass p-10 rounded-[2.5rem] max-w-md w-full text-center z-10 floating" id="main-card">
+    <div class="glass p-8 md:p-10 rounded-[2.5rem] max-w-md w-full text-center z-10 floating" id="main-card">
         
-        <div class="mb-8 flex justify-center">
+        <div class="mb-6 flex justify-center">
             <div class="relative">
                 <div class="bg-blue-50 p-6 rounded-full relative z-10">
-                    <svg id="weather-icon" xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-blue-500" style="animation: spin 12s linear infinite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <!-- Ikon default (Matahari) -->
+                    <svg id="weather-icon" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="4"></circle>
                         <path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93l1.41 1.41"></path><path d="M17.66 17.66l1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M6.34 17.66l-1.41 1.41"></path><path d="M19.07 4.93l-1.41 1.41"></path>
                     </svg>
@@ -166,37 +180,56 @@
             </div>
         </div>
 
-        <div class="space-y-1">
+        <div class="space-y-1 mb-4">
             <p class="text-blue-400 font-semibold tracking-widest uppercase text-xs">A message for you</p>
-            <h1 id="greeting-text" class="text-4xl font-bold text-blue-800">Good Morning,</h1>
-            <h2 class="text-6xl cursive text-blue-600 pb-4">Aphiphi</h2>
+            <h1 id="greeting-text" class="text-3xl font-bold text-blue-800">Good Morning,</h1>
+            <h2 class="text-5xl cursive text-blue-600">Aphiphi</h2>
         </div>
 
-        <div class="bg-white/30 rounded-2xl p-6 my-8 min-h-[120px] flex items-center justify-center border border-white/40">
+        <!-- Quote Area -->
+        <div class="bg-white/30 rounded-2xl p-5 mb-6 min-h-[100px] flex items-center justify-center border border-white/40 shadow-sm">
             <p id="morning-quote" class="text-blue-800 text-lg leading-relaxed font-medium">
                 "May your day be as bright as your smile this morning."
             </p>
         </div>
 
+        <!-- AI Interaction Area (Dark Blue Theme) -->
+        <div class="mb-6 text-left bg-slate-900 p-5 rounded-3xl border border-blue-800 shadow-xl">
+            <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-1 mb-2 block">Dream Alchemist ✨</label>
+            <div class="relative">
+                <input id="dream-input" type="text" placeholder="Share your dream or mood..." 
+                    class="w-full bg-slate-800 border border-blue-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder:text-blue-300/30 text-blue-100">
+                <button onclick="interpretDream()" class="absolute right-2 top-1.5 text-blue-400 hover:text-blue-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                </button>
+            </div>
+            <div id="ai-response" class="hidden mt-3 p-3 bg-slate-800/50 rounded-xl text-xs text-blue-200 italic leading-relaxed border border-blue-700/50"></div>
+        </div>
+
         <div class="flex flex-col space-y-3">
-            <button onclick="changeMessage()" class="btn-primary hover:opacity-90 text-white font-bold py-4 px-10 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-xl flex items-center justify-center mx-auto w-full space-x-2">
-                <span>Send Sparkles ✨</span>
+            <button onclick="generateAdventure()" class="btn-ai hover:opacity-90 text-white font-bold py-3 px-6 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center justify-center space-x-2">
+                <span id="adventure-btn-text">Drawing Quest ✨</span>
             </button>
-            
-            <button onclick="toggleModal()" class="btn-secondary hover:bg-blue-50 font-bold py-3 px-10 rounded-2xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center mx-auto w-full space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                <span>View Our Memories</span>
-            </button>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="changeMessage()" class="btn-primary hover:opacity-90 text-white font-bold py-3 rounded-2xl transition-all transform hover:scale-105 text-sm">
+                    Sparkles ✨
+                </button>
+                <button onclick="toggleModal()" class="bg-white border-2 border-blue-400 text-blue-500 font-bold py-3 rounded-2xl transition-all transform hover:scale-105 text-sm">
+                    Memories
+                </button>
+            </div>
         </div>
     </div>
 
-    <div class="absolute bottom-8 text-blue-400 text-xs tracking-widest uppercase font-bold opacity-60 z-10 flex items-center space-x-2">
-        <span class="w-8 h-[1px] bg-blue-300"></span>
-        <span>Made with ❤️ for Shiroino</span>
-        <span class="w-8 h-[1px] bg-blue-300"></span>
+    <div class="absolute bottom-4 text-blue-400 text-[10px] tracking-widest uppercase font-bold opacity-60 z-10 flex items-center space-x-2">
+        <span class="w-6 h-[1px] bg-blue-300"></span>
+        <span>With Love for Shiroino</span>
+        <span class="w-6 h-[1px] bg-blue-300"></span>
     </div>
 
     <script>
+        const apiKey = ""; 
         const myPhotos = [
             "https://i.imgur.com/udD7Nji.png", 
             "https://i.imgur.com/bBV9ZX4.png",
@@ -220,70 +253,125 @@
         ];
 
         let lastIndex = -1;
+        const startDate = new Date('2025-12-20T00:00:00');
 
-        // Fungsi untuk mengatur sapaan dan ikon berdasarkan waktu
+        async function callGemini(prompt, systemInstruction) {
+            let retries = 5;
+            let delay = 1000;
+            
+            while (retries > 0) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            systemInstruction: { parts: [{ text: systemInstruction }] }
+                        })
+                    });
+                    
+                    if (!response.ok) throw new Error('API request failed');
+                    
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "The stars are silent today...";
+                } catch (error) {
+                    retries--;
+                    if (retries === 0) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function interpretDream() {
+            const input = document.getElementById('dream-input');
+            const responseDiv = document.getElementById('ai-response');
+            const dreamText = input.value.trim();
+            
+            if (!dreamText) return;
+            
+            responseDiv.classList.remove('hidden');
+            responseDiv.innerHTML = '<div class="flex items-center space-x-2"><span>Brewing magic...</span> <div class="loader"></div></div>';
+            
+            try {
+                const systemPrompt = "You are a poetic and loving 'Dream Alchemist' for a girl named Aphiphi. Your task is to take a short dream description or mood and transform it into a 1-2 sentence morning interpretation that is magical, positive, and romantic. Use sweet and encouraging English.";
+                const result = await callGemini(`Aphiphi says: ${dreamText}`, systemPrompt);
+                responseDiv.innerText = result;
+                input.value = "";
+            } catch (err) {
+                responseDiv.innerText = "The magic is recharging. Try again in a moment, love! ✨";
+            }
+        }
+
+        async function generateAdventure() {
+            const quoteElement = document.getElementById('morning-quote');
+            const btnText = document.getElementById('adventure-btn-text');
+            const originalText = btnText.innerText;
+            
+            btnText.innerHTML = 'Finding Inspiration... <div class="loader ml-2"></div>';
+            
+            try {
+                const systemPrompt = "You are an 'Artistic Mentor'. Give one very simple, sweet, and creative drawing challenge (quest) for Aphiphi to do today. Examples: 'Draw a tiny flower on the edge of your paper', 'Sketch a cloud that looks like a bunny', or 'Doodle a heart that represents how you feel'. Format it in one short sentence with a relevant emoji. Use cute and encouraging English.";
+                const result = await callGemini("Give a short drawing challenge for Aphiphi today.", systemPrompt);
+                
+                quoteElement.style.opacity = 0;
+                setTimeout(() => {
+                    quoteElement.innerText = `"${result.trim()}"`;
+                    quoteElement.style.opacity = 1;
+                    for(let i=0; i<8; i++) setTimeout(createParticle, i * 50);
+                }, 400);
+            } catch (err) {
+                quoteElement.innerText = "Let's draw something that makes you happy today! ❤️";
+            } finally {
+                btnText.innerText = originalText;
+            }
+        }
+
+        function updateTimer() {
+            const diff = new Date() - startDate;
+            const days = Math.floor(diff / 86400000);
+            const hours = Math.floor((diff % 86400000) / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+            document.getElementById('lifetime-timer').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
         function setGreeting() {
             const greetingElement = document.getElementById('greeting-text');
             const weatherIcon = document.getElementById('weather-icon');
             const hour = new Date().getHours();
-            
             let greeting = "Good Morning,";
             
-            // Logika ganti teks sapaan dan ikon
             if (hour >= 12 && hour < 17) {
                 greeting = "Good Afternoon,";
-                // Ikon Matahari Siang
                 weatherIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><path d="M12 1v2"></path><path d="M12 21v2"></path><path d="M4.22 4.22l1.42 1.42"></path><path d="M18.36 18.36l1.42 1.42"></path><path d="M1 12h2"></path><path d="M21 12h2"></path><path d="M4.22 19.78l1.42-1.42"></path><path d="M18.36 5.64l1.42-1.42"></path>`;
             } else if (hour >= 17 && hour < 20) {
                 greeting = "Good Evening,";
-                // Ikon Bulan Sabit Malam
                 weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>`;
             } else if (hour >= 20 || hour < 4) {
                 greeting = "Good Night,";
-                // Ikon Bulan Sabit Malam
                 weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>`;
-            } else {
-                // Ikon Matahari Pagi (Default)
-                weatherIcon.innerHTML = `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93l1.41 1.41"></path><path d="M17.66 17.66l1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M6.34 17.66l-1.41 1.41"></path><path d="M19.07 4.93l-1.41 1.41"></path>`;
             }
-
             greetingElement.innerText = greeting;
         }
 
-        // Inisialisasi Galeri Modal
-        const gallery = document.getElementById('gallery-container');
-        myPhotos.forEach(url => {
-            const div = document.createElement('div');
-            div.className = "aspect-square overflow-hidden rounded-xl bg-gray-100 shadow-inner";
-            div.innerHTML = `<img src="${url}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" onerror="this.src='https://picsum.photos/200/200'">`;
-            gallery.appendChild(div);
-        });
-
         function toggleModal() {
             const modal = document.getElementById('memory-modal');
-            const isVisible = modal.style.display === 'flex';
-            modal.style.display = isVisible ? 'none' : 'flex';
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        function closeModal(e) {
-            if(e.target.id === 'memory-modal') toggleModal();
-        }
+        function closeModal(e) { if(e.target.id === 'memory-modal') toggleModal(); }
 
         function changeMessage() {
             const quoteElement = document.getElementById('morning-quote');
             let randomIndex;
             do { randomIndex = Math.floor(Math.random() * messages.length); } while (randomIndex === lastIndex);
             lastIndex = randomIndex;
-
             quoteElement.style.opacity = 0;
-            quoteElement.style.transform = 'translateY(10px)';
-            
             setTimeout(() => {
                 quoteElement.innerText = `"${messages[randomIndex]}"`;
                 quoteElement.style.opacity = 1;
-                quoteElement.style.transform = 'translateY(0px)';
-                
-                for(let i=0; i<8; i++) { setTimeout(createParticle, i * 50); }
+                for(let i=0; i<8; i++) setTimeout(createParticle, i * 50);
             }, 400);
         }
 
@@ -296,24 +384,21 @@
                 `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L9 9l-8 3 8 3 3 8 3-8 8-3-8-3-3-8z"/></svg>`
             ];
             particle.innerHTML = types[Math.floor(Math.random() * types.length)];
-            const startX = Math.random() * 100;
-            const duration = 4 + Math.random() * 4;
-            const size = 0.5 + Math.random() * 1.5;
-            particle.style.left = startX + 'vw';
-            particle.style.transform = `scale(${size})`;
-            particle.style.animationDuration = duration + 's';
-            particle.style.color = `hsl(${200 + Math.random() * 30}, 80%, 70%)`;
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.transform = `scale(${0.5 + Math.random() * 1.5})`;
+            const dur = 4 + Math.random() * 4;
+            particle.style.animationDuration = dur + 's';
+            particle.style.color = `hsl(${210 + Math.random() * 20}, 70%, 60%)`;
             container.appendChild(particle);
-            setTimeout(() => { particle.remove(); }, duration * 1000);
+            setTimeout(() => particle.remove(), dur * 1000);
         }
 
         document.addEventListener('mousemove', (e) => {
             if (Math.random() > 0.85) {
                 const p = document.createElement('div');
                 p.className = 'sparkle-mouse';
-                p.style.left = e.clientX + 'px';
-                p.style.top = e.clientY + 'px';
-                p.style.background = `hsl(${190 + Math.random() * 40}, 100%, 70%)`;
+                p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
+                p.style.background = `hsl(${200 + Math.random() * 20}, 100%, 60%)`;
                 document.body.appendChild(p);
                 setTimeout(() => p.remove(), 800);
             }
@@ -321,7 +406,17 @@
 
         window.onload = () => {
             setGreeting();
+            updateTimer();
+            setInterval(updateTimer, 1000);
             setInterval(createParticle, 1500);
+            
+            const gallery = document.getElementById('gallery-container');
+            myPhotos.forEach(url => {
+                const div = document.createElement('div');
+                div.className = "aspect-square overflow-hidden rounded-xl bg-gray-100 shadow-inner";
+                div.innerHTML = `<img src="${url}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" onerror="this.src='https://picsum.photos/200/200'">`;
+                gallery.appendChild(div);
+            });
         };
     </script>
 </body>
