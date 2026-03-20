@@ -138,7 +138,6 @@
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Grid styling for mixed aspect ratios */
         .photo-square { grid-column: span 1; aspect-ratio: 1 / 1; }
         .photo-landscape { grid-column: span 2; aspect-ratio: 16 / 9; }
     </style>
@@ -177,9 +176,17 @@
         <div class="mb-6 flex justify-center">
             <div class="relative">
                 <div class="bg-blue-50 p-6 rounded-full relative z-10">
+                    <!-- Always Sun Icon -->
                     <svg id="weather-icon" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="4"></circle>
-                        <path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93l1.41 1.41"></path><path d="M17.66 17.66l1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M6.34 17.66l-1.41 1.41"></path><path d="M19.07 4.93l-1.41 1.41"></path>
+                        <path d="M12 2v2"></path>
+                        <path d="M12 20v2"></path>
+                        <path d="M4.93 4.93l1.41 1.41"></path>
+                        <path d="M17.66 17.66l1.41 1.41"></path>
+                        <path d="M2 12h2"></path>
+                        <path d="M20 12h2"></path>
+                        <path d="M6.34 17.66l-1.41 1.41"></path>
+                        <path d="M19.07 4.93l-1.41 1.41"></path>
                     </svg>
                 </div>
                 <div class="absolute inset-0 bg-blue-400 rounded-full opacity-20 scale-125 animate-ping"></div>
@@ -235,7 +242,7 @@
     </div>
 
     <script>
-        const apiKey = "AIzaSyA-HXKagPGL_DJ7kPHd-PkF19XZ2e4Q-Ns"; 
+        const apiKey = ""; 
         
         const myPhotos = [
             { url: "https://i.imgur.com/udD7Nji.png", type: "square" }, 
@@ -267,8 +274,6 @@
         async function callGemini(prompt, systemInstruction) {
             let retries = 5;
             let delay = 1000;
-            
-            // Adding dynamic randomness to the prompt to force model variation
             const seed = Math.random().toString(36).substring(7);
             const dynamicPrompt = `${prompt} [Variation key: ${seed}]`;
 
@@ -281,14 +286,13 @@
                             contents: [{ parts: [{ text: dynamicPrompt }] }],
                             systemInstruction: { parts: [{ text: systemInstruction }] },
                             generationConfig: {
-                                temperature: 0.9, // Higher temperature for more variety
+                                temperature: 0.9,
                                 topP: 0.95
                             }
                         })
                     });
                     
                     if (!response.ok) throw new Error('API request failed');
-                    
                     const data = await response.json();
                     return data.candidates?.[0]?.content?.parts?.[0]?.text || "The stars are silent today...";
                 } catch (error) {
@@ -357,19 +361,15 @@
 
         function setGreeting() {
             const greetingElement = document.getElementById('greeting-text');
-            const weatherIcon = document.getElementById('weather-icon');
             const hour = new Date().getHours();
             let greeting = "Good Morning,";
             
             if (hour >= 12 && hour < 17) {
                 greeting = "Good Afternoon,";
-                weatherIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><path d="M12 1v2"></path><path d="M12 21v2"></path><path d="M4.22 4.22l1.42 1.42"></path><path d="M18.36 18.36l1.42 1.42"></path><path d="M1 12h2"></path><path d="M21 12h2"></path><path d="M4.22 19.78l1.42-1.42"></path><path d="M18.36 5.64l1.42-1.42"></path>`;
             } else if (hour >= 17 && hour < 20) {
                 greeting = "Good Evening,";
-                weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9Z"></path>`;
             } else if (hour >= 20 || hour < 4) {
                 greeting = "Good Night,";
-                weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9Z"></path>`;
             }
             greetingElement.innerText = greeting;
         }
