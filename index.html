@@ -137,6 +137,10 @@
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Grid styling for mixed aspect ratios */
+        .photo-square { grid-column: span 1; aspect-ratio: 1 / 1; }
+        .photo-landscape { grid-column: span 2; aspect-ratio: 16 / 9; }
     </style>
 </head>
 <body class="relative">
@@ -160,7 +164,9 @@
                 <div id="lifetime-timer" class="text-blue-800 font-bold text-xl tabular-nums">0d 0h 0m 0s</div>
             </div>
 
+            <!-- Gallery Grid -->
             <div class="grid grid-cols-2 gap-4" id="gallery-container"></div>
+            
             <p class="mt-6 text-center text-blue-400 italic text-sm">"Every picture tells a story, especially ours."</p>
         </div>
     </div>
@@ -193,7 +199,7 @@
             </p>
         </div>
 
-        <!-- AI Interaction Area (Dark Blue Theme) -->
+        <!-- AI Interaction Area -->
         <div class="mb-6 text-left bg-slate-900 p-5 rounded-3xl border border-blue-800 shadow-xl">
             <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-1 mb-2 block">Dream Alchemist ✨</label>
             <div class="relative">
@@ -230,13 +236,18 @@
 
     <script>
         const apiKey = ""; 
+        
+        // Defined photos with aspect ratio metadata
         const myPhotos = [
-            "https://i.imgur.com/udD7Nji.png", 
-            "https://i.imgur.com/bBV9ZX4.png",
-            "https://i.imgur.com/3ZOiyZJ.png",
-            "https://i.imgur.com/HDocgJm.png",
-            "https://i.imgur.com/wqvxjIR.png",
-            "https://i.imgur.com/TvAXmIB.png"
+            { url: "https://i.imgur.com/udD7Nji.png", type: "square" }, 
+            { url: "https://i.imgur.com/bBV9ZX4.png", type: "square" },
+            { url: "https://i.imgur.com/3ZOiyZJ.png", type: "square" },
+            { url: "https://i.imgur.com/HDocgJm.png", type: "square" },
+            // Two new landscape photos
+            { url: "https://i.imgur.com/RstBcML.jpeg", type: "landscape" },
+            { url: "https://i.imgur.com/s3qeweS.jpeg", type: "landscape" },
+            { url: "https://i.imgur.com/wqvxjIR.png", type: "square" },
+            { url: "https://i.imgur.com/TvAXmIB.png", type: "square" }
         ];
         
         const messages = [
@@ -347,10 +358,10 @@
                 weatherIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><path d="M12 1v2"></path><path d="M12 21v2"></path><path d="M4.22 4.22l1.42 1.42"></path><path d="M18.36 18.36l1.42 1.42"></path><path d="M1 12h2"></path><path d="M21 12h2"></path><path d="M4.22 19.78l1.42-1.42"></path><path d="M18.36 5.64l1.42-1.42"></path>`;
             } else if (hour >= 17 && hour < 20) {
                 greeting = "Good Evening,";
-                weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>`;
+                weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9Z"></path>`;
             } else if (hour >= 20 || hour < 4) {
                 greeting = "Good Night,";
-                weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>`;
+                weatherIcon.innerHTML = `<path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9Z"></path>`;
             }
             greetingElement.innerText = greeting;
         }
@@ -411,10 +422,12 @@
             setInterval(createParticle, 1500);
             
             const gallery = document.getElementById('gallery-container');
-            myPhotos.forEach(url => {
+            myPhotos.forEach(photo => {
                 const div = document.createElement('div');
-                div.className = "aspect-square overflow-hidden rounded-xl bg-gray-100 shadow-inner";
-                div.innerHTML = `<img src="${url}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" onerror="this.src='https://picsum.photos/200/200'">`;
+                // Apply specific classes based on aspect ratio
+                const ratioClass = photo.type === 'landscape' ? 'photo-landscape' : 'photo-square';
+                div.className = `${ratioClass} overflow-hidden rounded-xl bg-gray-100 shadow-inner`;
+                div.innerHTML = `<img src="${photo.url}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" onerror="this.src='https://picsum.photos/400/225'">`;
                 gallery.appendChild(div);
             });
         };
