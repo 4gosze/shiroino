@@ -127,7 +127,7 @@
         }
 
         .loader {
-            border: 2px solid #f3f3f3;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-top: 2px solid #ffffff;
             border-radius: 50%;
             width: 16px;
@@ -193,8 +193,8 @@
         </div>
 
         <!-- Quote Area -->
-        <div class="bg-white/30 rounded-2xl p-5 mb-6 min-h-[100px] flex items-center justify-center border border-white/40 shadow-sm">
-            <p id="morning-quote" class="text-blue-800 text-lg leading-relaxed font-medium">
+        <div class="bg-white/30 rounded-2xl p-5 mb-6 min-h-[100px] flex items-center justify-center border border-white/40 shadow-sm transition-all duration-500">
+            <p id="morning-quote" class="text-blue-800 text-lg leading-relaxed font-medium transition-opacity duration-300">
                 "May your day be as bright as your smile this morning."
             </p>
         </div>
@@ -214,7 +214,7 @@
 
         <div class="flex flex-col space-y-3">
             <button onclick="generateAdventure()" class="btn-ai hover:opacity-90 text-white font-bold py-3 px-6 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center justify-center space-x-2">
-                <span id="adventure-btn-text">Mini-Quest~ ✨</span>
+                <span id="adventure-btn-text" class="flex items-center">Mini-Quest~ ✨</span>
             </button>
 
             <div class="grid grid-cols-2 gap-3">
@@ -237,13 +237,11 @@
     <script>
         const apiKey = ""; 
         
-        // Defined photos with aspect ratio metadata
         const myPhotos = [
             { url: "https://i.imgur.com/udD7Nji.png", type: "square" }, 
             { url: "https://i.imgur.com/bBV9ZX4.png", type: "square" },
             { url: "https://i.imgur.com/3ZOiyZJ.png", type: "square" },
             { url: "https://i.imgur.com/HDocgJm.png", type: "square" },
-            // Two new landscape photos
             { url: "https://i.imgur.com/RstBcML.jpeg", type: "landscape" },
             { url: "https://i.imgur.com/s3qeweS.jpeg", type: "landscape" },
             { url: "https://i.imgur.com/wqvxjIR.png", type: "square" },
@@ -270,14 +268,22 @@
             let retries = 5;
             let delay = 1000;
             
+            // Adding dynamic randomness to the prompt to force model variation
+            const seed = Math.random().toString(36).substring(7);
+            const dynamicPrompt = `${prompt} [Variation key: ${seed}]`;
+
             while (retries > 0) {
                 try {
                     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }] }],
-                            systemInstruction: { parts: [{ text: systemInstruction }] }
+                            contents: [{ parts: [{ text: dynamicPrompt }] }],
+                            systemInstruction: { parts: [{ text: systemInstruction }] },
+                            generationConfig: {
+                                temperature: 0.9, // Higher temperature for more variety
+                                topP: 0.95
+                            }
                         })
                     });
                     
@@ -305,9 +311,9 @@
             responseDiv.innerHTML = '<div class="flex items-center space-x-2"><span>Brewing magic...</span> <div class="loader"></div></div>';
             
             try {
-                const systemPrompt = "You are a poetic and loving 'Dream Alchemist' for a girl named Aphiphi. Your task is to take a short dream description or mood and transform it into a 1-2 sentence morning interpretation that is magical, positive, and romantic. Use sweet and encouraging English.";
+                const systemPrompt = "You are a poetic and loving 'Dream Alchemist' for a girl named Aphiphi. Your task is to take a short dream description or mood and transform it into a 1-2 sentence morning interpretation that is unique, magical, positive, and romantic. BE CREATIVE. Do not repeat previous phrases. Use different metaphors each time.";
                 const result = await callGemini(`Aphiphi says: ${dreamText}`, systemPrompt);
-                responseDiv.innerText = result;
+                responseDiv.innerText = result.trim();
                 input.value = "";
             } catch (err) {
                 responseDiv.innerText = "The magic is recharging. Try again in a moment, love! ✨";
@@ -317,13 +323,14 @@
         async function generateAdventure() {
             const quoteElement = document.getElementById('morning-quote');
             const btnText = document.getElementById('adventure-btn-text');
-            const originalText = btnText.innerText;
+            const originalText = btnText.innerHTML;
             
             btnText.innerHTML = 'Finding Inspiration... <div class="loader ml-2"></div>';
+            btnText.disabled = true;
             
             try {
-                const systemPrompt = "You are an 'Artistic Mentor'. Give one very simple, sweet, and creative drawing challenge (quest) for Aphiphi to do today. Examples: 'Draw a tiny flower on the edge of your paper', 'Sketch a cloud that looks like a bunny', or 'Doodle a heart that represents how you feel'. Format it in one short sentence with a relevant emoji. Use cute and encouraging English.";
-                const result = await callGemini("Give a short drawing challenge for Aphiphi today.", systemPrompt);
+                const systemPrompt = "You are an 'Artistic Mentor'. Give one very simple, sweet, and unique creative drawing challenge for Aphiphi. Each challenge MUST be different from common ones. Examples: 'Draw a tiny galaxy inside a coffee cup', 'Sketch a leaf with eyes', 'Doodle a star wearing a scarf'. Format it in one short sentence with a relevant emoji. Use cute and encouraging English.";
+                const result = await callGemini("Give a unique, short drawing challenge for Aphiphi today.", systemPrompt);
                 
                 quoteElement.style.opacity = 0;
                 setTimeout(() => {
@@ -334,7 +341,8 @@
             } catch (err) {
                 quoteElement.innerText = "Let's draw something that makes you happy today! ❤️";
             } finally {
-                btnText.innerText = originalText;
+                btnText.innerHTML = originalText;
+                btnText.disabled = false;
             }
         }
 
@@ -424,10 +432,9 @@
             const gallery = document.getElementById('gallery-container');
             myPhotos.forEach(photo => {
                 const div = document.createElement('div');
-                // Apply specific classes based on aspect ratio
                 const ratioClass = photo.type === 'landscape' ? 'photo-landscape' : 'photo-square';
                 div.className = `${ratioClass} overflow-hidden rounded-xl bg-gray-100 shadow-inner`;
-                div.innerHTML = `<img src="${photo.url}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" onerror="this.src='https://picsum.photos/400/225'">`;
+                div.innerHTML = `<img src="${photo.url}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" onerror="this.src='https://picsum.photos/400/225'">`;
                 gallery.appendChild(div);
             });
         };
