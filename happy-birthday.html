@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Shiro! 🎂</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&family=Dancing+Script:wght@600&family=Sacramento&display=swap');
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f0f9ff;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .font-romantic { font-family: 'Sacramento', cursive; }
+
+        /* VISUALIZATION 1: Animated Gradient Background */
+        .bg-animated {
+            background: linear-gradient(-45deg, #f0f9ff, #dbeafe, #bae6fd, #e0f2fe);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* VISUALIZATION 2: Floating Magic Bubbles */
+        .floating-bubble {
+            position: fixed;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp linear infinite forwards;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.4; }
+            100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+        }
+
+        /* VISUALIZATION 3: Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* VISUALIZATION 4: Mouse Sparkle Trail */
+        .sparkle-trail {
+            position: fixed;
+            pointer-events: none;
+            width: 10px;
+            height: 10px;
+            background-color: #60a5fa;
+            border-radius: 50%;
+            z-index: 9999;
+            box-shadow: 0 0 10px #93c5fd, 0 0 20px #bfdbfe;
+            animation: trailFade 0.6s ease-out forwards;
+        }
+
+        @keyframes trailFade {
+            0% { transform: scale(1) translate(-50%, -50%); opacity: 0.8; }
+            100% { transform: scale(0.1) translate(-50%, -50%); opacity: 0; }
+        }
+
+        /* Card Game Styles */
+        .card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .card:hover .card-front {
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+        }
+
+        .card-back { background-color: #60a5fa; transform: rotateY(180deg); }
+        .card-front { background-color: #dbeafe; }
+        
+        .photo-card {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+        }
+        .photo-card:hover {
+            transform: translateY(-10px) rotate(0deg) scale(1.05) !important;
+            box-shadow: 0 25px 30px -5px rgba(96, 165, 250, 0.3), 0 10px 10px -5px rgba(96, 165, 250, 0.1);
+            z-index: 10;
+        }
+        
+        /* Pulse Animation for Letter */
+        @keyframes gentle-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(96, 165, 250, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(96, 165, 250, 0.6); }
+        }
+        .pulse-heart { animation: gentle-pulse 2s infinite; }
+    </style>
+</head>
+<body class="bg-animated">
+
+    <!-- Container for Floating Background Bubbles -->
+    <div id="bubbles-container"></div>
+
+    <a href="index.html" class="fixed top-6 left-6 z-50 bg-white/70 backdrop-blur-md text-blue-600 p-3 rounded-full shadow-lg hover:bg-blue-50 transition-all hover:-translate-x-1 hover:shadow-blue-200">
+        <i data-lucide="arrow-left"></i>
+    </a>
+
+    <!-- Hero Surprise -->
+    <section class="min-h-screen flex flex-col items-center justify-center text-center p-6 relative z-10">
+        <h2 class="text-4xl md:text-5xl font-romantic text-blue-400 mb-2 drop-shadow-sm">Happy Birthday</h2>
+        <h1 class="text-6xl md:text-8xl font-romantic text-blue-600 mb-4 animate-pulse drop-shadow-md">It's Your Day, Shiro!</h1>
+        <p class="text-xl text-gray-700 max-w-md mb-8 font-medium">Welcome to your secret surprise. Scroll down to unwrap your gifts...</p>
+        <div class="animate-bounce mt-10 p-4 bg-white/30 rounded-full backdrop-blur-sm border border-white/50">
+            <i data-lucide="chevron-down" class="text-blue-500 w-8 h-8"></i>
+        </div>
+    </section>
+
+    <!-- Photo Gallery Section -->
+    <section class="py-20 px-6 relative z-10">
+        <div class="max-w-5xl mx-auto text-center reveal">
+            <h2 class="text-5xl md:text-6xl font-romantic text-blue-800 mb-4 drop-shadow-sm">Our Precious Moments 📸</h2>
+            <p class="text-gray-600 mb-12 font-medium">Every picture tells a story of us.</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="birthday-gallery">
+                <!-- Foto dirender melalui JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Memory Game -->
+    <section class="py-20 px-6 border-y border-blue-200/50 bg-white/20 backdrop-blur-sm relative z-10">
+        <div class="max-w-4xl mx-auto text-center reveal">
+            <h2 class="text-5xl md:text-6xl font-romantic text-gray-800 mb-4">Find Your Match ❤️</h2>
+            <p class="text-gray-700 mb-8 font-medium">Match all the icons to unlock a secret message!</p>
+            <div id="game-board" class="grid grid-cols-3 md:grid-cols-4 gap-4 max-w-md mx-auto min-h-[300px]"></div>
+            
+            <div id="game-message" class="hidden mt-8 p-6 bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border-2 border-blue-300 animate-bounce transition-all">
+                <h3 class="text-4xl md:text-5xl font-romantic text-blue-500 mb-2 drop-shadow-sm">Yaaay! You Won! 🎉</h3>
+                <p class="text-gray-800 font-medium">"Just like these cards, we are a perfect match. Happy Birthday and I Love You, Shiro!"</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Letter -->
+    <section class="py-24 px-6 relative z-10">
+        <div class="max-w-2xl mx-auto bg-white/80 backdrop-blur-lg p-10 shadow-[0_20px_50px_rgba(96,165,250,0.15)] rounded-tr-[50px] rounded-bl-[50px] relative border border-blue-100 reveal transition-transform duration-500 hover:scale-[1.02]">
+            <div class="absolute -top-6 -right-6 bg-blue-500 text-white p-4 rounded-full shadow-lg pulse-heart">
+                <i data-lucide="heart" class="fill-current text-white"></i>
+            </div>
+            <h2 class="text-5xl md:text-6xl font-romantic text-blue-600 mb-6 drop-shadow-sm">A Letter for Shiro</h2>
+            <div class="space-y-4 text-gray-700 leading-relaxed italic text-lg">
+                <p>Hi dear Shiro,</p>
+                <p>Happy birthday! I made this little universe just for you. Every pixel here carries my love.</p>
+                <p>Thank you for always being patient, for always lighting up my world, and for growing with me. I hope this year brings you everything your heart desires.</p>
+                <p>You are my favorite inspiration.</p>
+                <p class="mt-8 font-bold text-right text-blue-500">— Forever yours ❤️</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-10 text-center text-blue-500 text-[10px] tracking-widest uppercase font-bold opacity-70 relative z-10">
+        <p>With Love for Shiroino &bull; 2026</p>
+    </footer>
+
+    <script>
+        // VISUALIZATION: Mouse Sparkle Trail
+        document.addEventListener('mousemove', function(e) {
+            // Membatasi frekuensi render percikan agar tidak memberatkan browser
+            if (Math.random() > 0.6) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle-trail';
+                sparkle.style.left = e.clientX + 'px';
+                sparkle.style.top = e.clientY + 'px';
+                document.body.appendChild(sparkle);
+                
+                // Hapus elemen setelah animasi selesai
+                setTimeout(() => sparkle.remove(), 600);
+            }
+        });
+
+        // VISUALIZATION: Floating Bubbles Background
+        function createBubble() {
+            const container = document.getElementById('bubbles-container');
+            const bubble = document.createElement('div');
+            bubble.className = 'floating-bubble';
+            
+            // Random properties
+            const size = Math.random() * 60 + 20; // 20px - 80px
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 100 + 'vw';
+            bubble.style.animationDuration = (Math.random() * 5 + 8) + 's'; // 8s - 13s
+            
+            container.appendChild(bubble);
+            
+            // Bersihkan bubble setelah selesai mengudara
+            setTimeout(() => bubble.remove(), 13000);
+        }
+        // Buat bubble baru setiap 800ms
+        setInterval(createBubble, 800);
+
+        // VISUALIZATION: Scroll Reveal
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            const windowHeight = window.innerHeight;
+            const elementVisible = 150; // Jarak trigger dari bawah layar
+
+            reveals.forEach(reveal => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', revealOnScroll);
+
+        // ==========================================
+        // FITUR UTAMA (Foto & Game)
+        // ==========================================
+
+        const birthdayPhotos = [
+            "https://i.imgur.com/udD7Nji.png",
+            "https://i.imgur.com/bBV9ZX4.png",
+            "https://i.imgur.com/3ZOiyZJ.png",
+            "https://i.imgur.com/HDocgJm.png"
+        ];
+
+        function renderPhotos() {
+            const gallery = document.getElementById('birthday-gallery');
+            birthdayPhotos.forEach((url, index) => {
+                const div = document.createElement('div');
+                div.className = "photo-card aspect-square rounded-2xl overflow-hidden border-4 border-white shadow-md bg-white p-1";
+                // Rotasi acak antara -4deg sampai 4deg
+                const randomRotate = Math.random() * 8 - 4;
+                div.style.transform = `rotate(${randomRotate}deg)`; 
+                div.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl" loading="lazy" onerror="this.src='https://picsum.photos/400/400?random=${index}'">`;
+                gallery.appendChild(div);
+            });
+        }
+
+        // MEMORY GAME LOGIC
+        const gameIcons = ['heart', 'star', 'gift', 'music', 'camera', 'coffee'];
+        let flippedCards = [];
+        let matchedCount = 0;
+
+        function createBoard() {
+            const board = document.getElementById('game-board');
+            const items = [...gameIcons, ...gameIcons].sort(() => Math.random() - 0.5);
+            board.innerHTML = '';
+            items.forEach(icon => {
+                const card = document.createElement('div');
+                card.className = 'card relative h-24 w-full';
+                card.dataset.icon = icon;
+                card.innerHTML = `
+                    <div class="card-inner relative" onclick="flipCard(this)">
+                        <div class="card-front"><i data-lucide="help-circle" class="text-blue-400"></i></div>
+                        <div class="card-back"><i data-lucide="${icon}" class="text-white"></i></div>
+                    </div>`;
+                board.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function flipCard(inner) {
+            const card = inner.parentElement;
+            if (flippedCards.length < 2 && !card.classList.contains('flipped') && !card.classList.contains('matched')) {
+                card.classList.add('flipped');
+                flippedCards.push(card);
+                if (flippedCards.length === 2) checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [c1, c2] = flippedCards;
+            if (c1.dataset.icon === c2.dataset.icon) {
+                c1.classList.add('matched'); c2.classList.add('matched');
+                matchedCount += 2; flippedCards = [];
+                if (matchedCount === 12) {
+                    document.getElementById('game-message').classList.remove('hidden');
+                    // Tembakkan confetti besar saat menang!
+                    confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 }, colors: ['#60a5fa', '#ffffff', '#3b82f6', '#bfdbfe'] });
+                    // Scroll otomatis ke pesan kemenangan
+                    setTimeout(() => {
+                        document.getElementById('game-message').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 500);
+                }
+            } else {
+                setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flippedCards = []; }, 1000);
+            }
+        }
+
+        // INIT KETIKA HALAMAN DIMUAT
+        window.onload = () => {
+            lucide.createIcons();
+            renderPhotos();
+            createBoard();
+            revealOnScroll(); // Trigger pertama kali untuk mengecek elemen di layar atas
+            
+            // Tembakkan confetti pembuka saat baru masuk halaman ini
+            setTimeout(() => {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.2 }, colors: ['#60a5fa', '#3b82f6', '#93c5fd'] });
+            }, 500);
+        };
+    </script>
+</body>
+</html>
