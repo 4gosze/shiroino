@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shiroino</title>
+    <title>Dashboard - Untuk Shiro ✨</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&family=Dancing+Script:wght@600&display=swap');
 
@@ -12,17 +13,10 @@
             font-family: 'Quicksand', sans-serif;
             background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 50%, #e0f2fe 100%);
             min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            padding: 20px;
+            scroll-behavior: smooth;
         }
 
-        .cursive {
-            font-family: 'Dancing Script', cursive;
-        }
+        .cursive { font-family: 'Dancing Script', cursive; }
 
         .glass {
             background: rgba(255, 255, 255, 0.6);
@@ -33,9 +27,7 @@
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
+        .floating { animation: float 6s ease-in-out infinite; }
 
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -53,18 +45,9 @@
         }
 
         @keyframes rise {
-            0% {
-                transform: translateY(110vh) translateX(0) scale(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-                transform: translateY(90vh) translateX(10px) scale(1) rotate(10deg);
-            }
-            100% {
-                transform: translateY(-20vh) translateX(-20px) scale(1.5) rotate(360deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(110vh) translateX(0) scale(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; transform: translateY(90vh) translateX(10px) scale(1) rotate(10deg); }
+            100% { transform: translateY(-20vh) translateX(-20px) scale(1.5) rotate(360deg); opacity: 0; }
         }
 
         .sparkle-mouse {
@@ -83,11 +66,6 @@
         @keyframes particle-fade {
             from { transform: scale(1); opacity: 0.6; }
             to { transform: scale(0.1); opacity: 0; }
-        }
-
-        .btn-primary {
-            background: linear-gradient(to right, #3b82f6, #60a5fa);
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
         }
 
         .btn-ai {
@@ -116,14 +94,6 @@
             overflow-y: auto;
             padding: 2rem;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            scrollbar-width: none;
-        }
-
-        .modal-content::-webkit-scrollbar { display: none; }
-
-        .timer-badge {
-            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
-            border: 1px solid #bae6fd;
         }
 
         .loader {
@@ -144,9 +114,62 @@
 </head>
 <body class="relative">
 
-    <div class="absolute inset-0 overflow-hidden pointer-events-none" id="background-layer"></div>
+    <div class="fixed inset-0 overflow-hidden pointer-events-none" id="background-layer"></div>
 
-    <!-- Memory Modal -->
+    <main class="min-h-screen flex items-center justify-center p-6 relative z-10">
+        <div class="glass p-8 md:p-10 rounded-[2.5rem] max-w-md w-full text-center floating" id="main-card">
+            
+            <div class="mb-6 flex justify-center">
+                <div class="relative">
+                    <div class="bg-blue-50 p-6 rounded-full relative z-10">
+                        <i data-lucide="sun" id="weather-icon" class="w-12 h-12 text-blue-500"></i>
+                    </div>
+                    <div class="absolute inset-0 bg-blue-400 rounded-full opacity-20 scale-125 animate-ping"></div>
+                </div>
+            </div>
+
+            <div class="space-y-1 mb-4">
+                <p class="text-blue-400 font-semibold tracking-widest uppercase text-xs">A special gift for you</p>
+                <h1 id="greeting-text" class="text-3xl font-bold text-blue-800">Good Morning,</h1>
+                <h2 class="text-5xl cursive text-blue-600">Shiroino</h2>
+            </div>
+
+            <div class="bg-white/30 rounded-2xl p-5 mb-6 min-h-[100px] flex items-center justify-center border border-white/40 shadow-sm transition-all duration-500">
+                <p id="morning-quote" class="text-blue-800 text-lg leading-relaxed font-medium transition-opacity duration-300">
+                    "May your day be as bright as your smile this morning."
+                </p>
+            </div>
+
+            <div class="mb-6 text-left bg-slate-900 p-5 rounded-3xl border border-blue-800 shadow-xl">
+                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-1 mb-2 block">Dream Alchemist ✨</label>
+                <div class="relative">
+                    <input id="dream-input" type="text" placeholder="Share your dream or mood..." 
+                        class="w-full bg-slate-800 border border-blue-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder:text-blue-300/30 text-blue-100">
+                    <button onclick="interpretDream()" class="absolute right-2 top-1.5 text-blue-400 hover:text-blue-200 transition-colors">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div id="ai-response" class="hidden mt-3 p-3 bg-slate-800/50 rounded-xl text-xs text-blue-200 italic leading-relaxed border border-blue-700/50"></div>
+            </div>
+
+            <div class="flex flex-col space-y-3">
+                <button onclick="window.location.href='happy-birthday.html'" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white font-bold py-4 px-6 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-xl flex items-center justify-center space-x-2">
+                    <i data-lucide="gift" class="w-5 h-5"></i>
+                    <span>Happy Birthday Surprise! 🎂</span>
+                </button>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="generateAdventure()" class="btn-ai text-white font-bold py-3 rounded-2xl transition-all transform hover:scale-105 text-sm">
+                        Mini-Quest ✨
+                    </button>
+                    <button onclick="toggleModal()" class="bg-white border-2 border-blue-400 text-blue-500 font-bold py-3 rounded-2xl transition-all transform hover:scale-105 text-sm">
+                        Memories
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
     <div id="memory-modal" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="flex justify-between items-start mb-2">
@@ -155,95 +178,25 @@
                     <p class="text-blue-400 text-sm font-medium">Since Dec 20, 2025</p>
                 </div>
                 <button onclick="toggleModal()" class="text-gray-400 hover:text-blue-500 transition-colors p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    <i data-lucide="x"></i>
                 </button>
             </div>
-
-            <div class="timer-badge rounded-2xl p-4 mb-6 text-center shadow-sm">
+            <div class="bg-blue-50 rounded-2xl p-4 mb-6 text-center shadow-sm">
                 <div id="lifetime-timer" class="text-blue-800 font-bold text-xl tabular-nums">0d 0h 0m 0s</div>
             </div>
-
-            <!-- Gallery Grid -->
             <div class="grid grid-cols-2 gap-4" id="gallery-container"></div>
-            
             <p class="mt-6 text-center text-blue-400 italic text-sm">"Every picture tells a story, especially ours."</p>
         </div>
     </div>
 
-    <!-- Main Card -->
-    <div class="glass p-8 md:p-10 rounded-[2.5rem] max-w-md w-full text-center z-10 floating" id="main-card">
-        
-        <div class="mb-6 flex justify-center">
-            <div class="relative">
-                <div class="bg-blue-50 p-6 rounded-full relative z-10">
-                    <svg id="weather-icon" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="4"></circle>
-                        <path d="M12 2v2"></path>
-                        <path d="M12 20v2"></path>
-                        <path d="M4.93 4.93l1.41 1.41"></path>
-                        <path d="M17.66 17.66l1.41 1.41"></path>
-                        <path d="M2 12h2"></path>
-                        <path d="M20 12h2"></path>
-                        <path d="M6.34 17.66l-1.41 1.41"></path>
-                        <path d="M19.07 4.93l-1.41 1.41"></path>
-                    </svg>
-                </div>
-                <div class="absolute inset-0 bg-blue-400 rounded-full opacity-20 scale-125 animate-ping"></div>
-            </div>
-        </div>
-
-        <div class="space-y-1 mb-4">
-            <p class="text-blue-400 font-semibold tracking-widest uppercase text-xs">A message for you</p>
-            <h1 id="greeting-text" class="text-3xl font-bold text-blue-800">Good Morning,</h1>
-            <h2 class="text-5xl cursive text-blue-600">Aphiphi</h2>
-        </div>
-
-        <!-- Quote Area -->
-        <div class="bg-white/30 rounded-2xl p-5 mb-6 min-h-[100px] flex items-center justify-center border border-white/40 shadow-sm transition-all duration-500">
-            <p id="morning-quote" class="text-blue-800 text-lg leading-relaxed font-medium transition-opacity duration-300">
-                "May your day be as bright as your smile this morning."
-            </p>
-        </div>
-
-        <!-- AI Interaction Area -->
-        <div class="mb-6 text-left bg-slate-900 p-5 rounded-3xl border border-blue-800 shadow-xl">
-            <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-1 mb-2 block">Dream Alchemist ✨</label>
-            <div class="relative">
-                <input id="dream-input" type="text" placeholder="Share your dream or mood..." 
-                    class="w-full bg-slate-800 border border-blue-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder:text-blue-300/30 text-blue-100">
-                <button onclick="interpretDream()" class="absolute right-2 top-1.5 text-blue-400 hover:text-blue-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
-                </button>
-            </div>
-            <div id="ai-response" class="hidden mt-3 p-3 bg-slate-800/50 rounded-xl text-xs text-blue-200 italic leading-relaxed border border-blue-700/50"></div>
-        </div>
-
-        <div class="flex flex-col space-y-3">
-            <button onclick="generateAdventure()" class="btn-ai hover:opacity-90 text-white font-bold py-3 px-6 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center justify-center space-x-2">
-                <span id="adventure-btn-text" class="flex items-center">Mini-Quest~ ✨</span>
-            </button>
-
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="changeMessage()" class="btn-primary hover:opacity-90 text-white font-bold py-3 rounded-2xl transition-all transform hover:scale-105 text-sm">
-                    Sparkles 💙
-                </button>
-                <button onclick="toggleModal()" class="bg-white border-2 border-blue-400 text-blue-500 font-bold py-3 rounded-2xl transition-all transform hover:scale-105 text-sm">
-                    Memories
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div class="absolute bottom-4 text-blue-400 text-[10px] tracking-widest uppercase font-bold opacity-60 z-10 flex items-center space-x-2">
-        <span class="w-6 h-[1px] bg-blue-300"></span>
-        <span>With Love for Shiroino</span>
-        <span class="w-6 h-[1px] bg-blue-300"></span>
-    </div>
+    <footer class="py-10 text-center text-blue-400 text-[10px] tracking-widest uppercase font-bold opacity-60">
+        <p>With Love for Shiroino &bull; 2026</p>
+    </footer>
 
     <script>
-        // PASTE YOUR GROQ API KEY HERE (Get one for free at console.groq.com)
+        // API KEY & CONFIG
         const apiKey = "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"; 
-        
+        const startDate = new Date('2025-12-20T00:00:00');
         const myPhotos = [
             { url: "https://i.imgur.com/udD7Nji.png", type: "square" }, 
             { url: "https://i.imgur.com/bBV9ZX4.png", type: "square" },
@@ -254,116 +207,8 @@
             { url: "https://i.imgur.com/wqvxjIR.png", type: "square" },
             { url: "https://i.imgur.com/TvAXmIB.png", type: "square" }
         ];
-        
-        const messages = [
-            "May your day be as bright as your smile. ☀️",
-            "Don't forget to eat and stay energized, love! 💪",
-            "Just wanted to say, I love you more than yesterday. ❤️",
-            "Good luck with your work today, Aphiphi! ✨",
-            "Remember to drink plenty of water, beautiful! 💧",
-            "Whatever happens today, remember I'm always here for you. 🏠",
-            "You are amazing and you can get through this day wonderfully! 🌟",
-            "Thinking of you makes my day so much better. 🥰",
-            "Take a deep breath. You've got this today. 🧘‍♀️",
-            "Sending you a big warm hug to start your day! 🤗"
-        ];
 
-        let lastIndex = -1;
-        const startDate = new Date('2025-12-20T00:00:00');
-
-        /**
-         * Generic function to call Groq AI (Free Tier)
-         */
-        async function callFreeAI(prompt, systemInstruction) {
-            if (!apiKey) {
-                return "The stars are quiet... (Please set your Groq API key in the script)";
-            }
-
-            let retries = 5;
-            let backoff = 1000;
-
-            while (retries > 0) {
-                try {
-                    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                        method: "POST",
-                        headers: {
-                            "Authorization": `Bearer ${apiKey}`,
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            model: "llama-3.1-8b-instant",
-                            messages: [
-                                { role: "system", content: systemInstruction },
-                                { role: "user", content: prompt }
-                            ],
-                            temperature: 0.9,
-                            max_tokens: 150
-                        })
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error?.message || 'Groq API error');
-                    }
-
-                    const data = await response.json();
-                    return data.choices[0]?.message?.content || "The magic is faint right now...";
-                } catch (error) {
-                    console.error("AI Request Failed:", error);
-                    retries--;
-                    if (retries === 0) throw error;
-                    await new Promise(r => setTimeout(r, backoff));
-                    backoff *= 2;
-                }
-            }
-        }
-
-        async function interpretDream() {
-            const input = document.getElementById('dream-input');
-            const responseDiv = document.getElementById('ai-response');
-            const dreamText = input.value.trim();
-            
-            if (!dreamText) return;
-            
-            responseDiv.classList.remove('hidden');
-            responseDiv.innerHTML = '<div class="flex items-center space-x-2"><span>Brewing magic...</span> <div class="loader"></div></div>';
-            
-            try {
-                const systemPrompt = "You are a poetic 'Dream Alchemist' for Aphiphi. Take her dream or mood and give a 1-2 sentence magical, romantic, and extremely sweet interpretation. Use emojis. Keep it short and artistic.";
-                const result = await callFreeAI(`Aphiphi says: ${dreamText}`, systemPrompt);
-                responseDiv.innerText = result.trim();
-                input.value = "";
-            } catch (err) {
-                responseDiv.innerText = "The magic is recharging. You're still beautiful though! ✨";
-            }
-        }
-
-        async function generateAdventure() {
-            const quoteElement = document.getElementById('morning-quote');
-            const btnText = document.getElementById('adventure-btn-text');
-            const originalText = btnText.innerHTML;
-            
-            btnText.innerHTML = 'Finding Inspiration... <div class="loader ml-2"></div>';
-            btnText.disabled = true;
-            
-            try {
-                const systemPrompt = "You are a cute mentor. Suggest ONE very tiny, creative drawing or doodle challenge for Aphiphi. Must be 1 sentence only. Be unique and use emojis. Example: 'Draw a cloud drinking a milkshake'.";
-                const result = await callFreeAI("Give a new, cute 1-sentence drawing challenge for Aphiphi.", systemPrompt);
-                
-                quoteElement.style.opacity = 0;
-                setTimeout(() => {
-                    quoteElement.innerText = `"${result.trim()}"`;
-                    quoteElement.style.opacity = 1;
-                    for(let i=0; i<8; i++) setTimeout(createParticle, i * 50);
-                }, 400);
-            } catch (err) {
-                quoteElement.innerText = "Let's draw something that makes you happy today! ❤️";
-            } finally {
-                btnText.innerHTML = originalText;
-                btnText.disabled = false;
-            }
-        }
-
+        // GREETING & TIMER
         function updateTimer() {
             const diff = new Date() - startDate;
             const days = Math.floor(diff / 86400000);
@@ -374,78 +219,91 @@
         }
 
         function setGreeting() {
-            const greetingElement = document.getElementById('greeting-text');
             const hour = new Date().getHours();
-            let greeting = "Good Morning,";
-            
-            if (hour >= 12 && hour < 17) greeting = "Good Afternoon,";
-            else if (hour >= 17 && hour < 20) greeting = "Good Evening,";
-            else if (hour >= 20 || hour < 4) greeting = "Good Night,";
-            
-            greetingElement.innerText = greeting;
+            let text = "Good Morning,";
+            if (hour >= 12 && hour < 17) text = "Good Afternoon,";
+            else if (hour >= 17 && hour < 20) text = "Good Evening,";
+            else if (hour >= 20 || hour < 4) text = "Good Night,";
+            document.getElementById('greeting-text').innerText = text;
         }
 
+        // AI FUNCTIONS
+        async function callFreeAI(prompt, systemInstruction) {
+            if (!apiKey) return "API key missing...";
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        model: "llama-3.1-8b-instant",
+                        messages: [{ role: "system", content: systemInstruction }, { role: "user", content: prompt }],
+                        temperature: 0.9, max_tokens: 150
+                    })
+                });
+                const data = await response.json();
+                return data.choices[0]?.message?.content || "Magic is recharging...";
+            } catch (error) { return "The stars are quiet..."; }
+        }
+
+        async function interpretDream() {
+            const input = document.getElementById('dream-input');
+            const responseDiv = document.getElementById('ai-response');
+            if (!input.value.trim()) return;
+            responseDiv.classList.remove('hidden');
+            responseDiv.innerHTML = 'Brewing magic... <div class="loader"></div>';
+            const result = await callFreeAI(`Shiro says: ${input.value}`, "You are a poetic Dream Alchemist. Give a 1-sentence sweet interpretation with emojis.");
+            responseDiv.innerText = result.trim();
+            input.value = "";
+        }
+
+        async function generateAdventure() {
+            const quoteElement = document.getElementById('morning-quote');
+            quoteElement.innerText = "Consulting the muse...";
+            const result = await callFreeAI("Suggest 1 tiny creative doodle challenge.", "Suggest 1 sentence tiny drawing challenge with emojis.");
+            quoteElement.innerText = `"${result.trim()}"`;
+            for(let i=0; i<5; i++) createParticle();
+        }
+
+        // MODAL & PARTICLES
         function toggleModal() {
-            const modal = document.getElementById('memory-modal');
-            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+            const m = document.getElementById('memory-modal');
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
         }
-
         function closeModal(e) { if(e.target.id === 'memory-modal') toggleModal(); }
 
-        function changeMessage() {
-            const quoteElement = document.getElementById('morning-quote');
-            let randomIndex;
-            do { randomIndex = Math.floor(Math.random() * messages.length); } while (randomIndex === lastIndex);
-            lastIndex = randomIndex;
-            quoteElement.style.opacity = 0;
-            setTimeout(() => {
-                quoteElement.innerText = `"${messages[randomIndex]}"`;
-                quoteElement.style.opacity = 1;
-                for(let i=0; i<8; i++) setTimeout(createParticle, i * 50);
-            }, 400);
-        }
-
         function createParticle() {
-            const container = document.getElementById('background-layer');
-            const particle = document.createElement('div');
-            particle.classList.add('heart');
-            const types = [
-                `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
-                `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L9 9l-8 3 8 3 3 8 3-8 8-3-8-3-3-8z"/></svg>`
-            ];
-            particle.innerHTML = types[Math.floor(Math.random() * types.length)];
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.transform = `scale(${0.5 + Math.random() * 1.5})`;
-            const dur = 4 + Math.random() * 4;
-            particle.style.animationDuration = dur + 's';
-            particle.style.color = `hsl(${210 + Math.random() * 20}, 70%, 60%)`;
-            container.appendChild(particle);
-            setTimeout(() => particle.remove(), dur * 1000);
+            const p = document.createElement('div');
+            p.classList.add('heart');
+            p.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = (4 + Math.random() * 4) + 's';
+            document.getElementById('background-layer').appendChild(p);
+            setTimeout(() => p.remove(), 8000);
         }
 
         document.addEventListener('mousemove', (e) => {
             if (Math.random() > 0.85) {
-                const p = document.createElement('div');
-                p.className = 'sparkle-mouse';
-                p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
-                p.style.background = `hsl(${200 + Math.random() * 20}, 100%, 60%)`;
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), 800);
+                const s = document.createElement('div');
+                s.className = 'sparkle-mouse';
+                s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px';
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 800);
             }
         });
 
+        // INIT
         window.onload = () => {
             setGreeting();
             updateTimer();
             setInterval(updateTimer, 1000);
             setInterval(createParticle, 1500);
-            
+            lucide.createIcons();
+
             const gallery = document.getElementById('gallery-container');
-            myPhotos.forEach(photo => {
+            myPhotos.forEach(p => {
                 const div = document.createElement('div');
-                const ratioClass = photo.type === 'landscape' ? 'photo-landscape' : 'photo-square';
-                div.className = `${ratioClass} overflow-hidden rounded-xl bg-gray-100 shadow-inner`;
-                div.innerHTML = `<img src="${photo.url}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" onerror="this.src='https://picsum.photos/400/225'">`;
+                div.className = `${p.type === 'landscape' ? 'photo-landscape' : 'photo-square'} overflow-hidden rounded-xl bg-gray-100`;
+                div.innerHTML = `<img src="${p.url}" class="w-full h-full object-cover hover:scale-105 transition-all duration-500" loading="lazy" onerror="this.src='https://picsum.photos/400/225'">`;
                 gallery.appendChild(div);
             });
         };
