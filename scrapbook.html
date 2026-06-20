@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Scrapbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Dancing+Script:wght@400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        scrapbook: {
+                            100: '#e0f2fe', // Lightest blue background
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8', // Main accent blue
+                            500: '#0ea5e9',
+                            800: '#075985', // Text dark blue
+                            900: '#082f49', // Darkest blue
+                        },
+                        paper: '#fdfbf7', // Slightly off-white for paper feel
+                        tape: 'rgba(255, 255, 255, 0.4)'
+                    },
+                    fontFamily: {
+                        handwriting: ['Caveat', 'cursive'],
+                        script: ['Dancing Script', 'cursive'],
+                        body: ['Open Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'page': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+                        'photo': '3px 3px 10px rgba(0, 0, 0, 0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-image: radial-gradient(#bae6fd 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #e0f2fe; /* Light blue background */
+            overflow: hidden; /* Prevent body scroll, handle in book */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* The Book Container */
+        .book {
+            position: relative;
+            width: 90vw;
+            max-width: 800px;
+            height: 85vh;
+            max-height: 600px;
+            perspective: 1500px; /* 3D effect for page turning */
+            display: flex;
+        }
+
+        /* Individual Pages */
+        .page {
+            position: absolute;
+            width: 50%; /* Half the book width */
+            height: 100%;
+            top: 0;
+            right: 0; /* Align pages to the right side initially */
+            transform-origin: left center; /* Turn from the left edge */
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            background-color: #fdfbf7;
+            border-radius: 2px 15px 15px 2px;
+            box-shadow: inset 5px 0 20px rgba(0,0,0,0.05), -2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        /* Cover Pages specific styling */
+        .page.cover {
+            background-color: #0ea5e9; /* Deep blue cover */
+            border-radius: 5px 20px 20px 5px;
+            box-shadow: inset 10px 0 30px rgba(0,0,0,0.2), 5px 5px 15px rgba(0,0,0,0.3);
+            color: white;
+            border: 2px solid #075985;
+        }
+
+        /* Back cover needs to sit on the left */
+        .page.back-cover {
+            right: auto;
+            left: 0;
+            transform-origin: right center;
+            border-radius: 20px 5px 5px 20px;
+            box-shadow: inset -10px 0 30px rgba(0,0,0,0.2), -5px 5px 15px rgba(0,0,0,0.3);
+            z-index: 0;
+        }
+
+        /* Page Front and Back Sides */
+        .page-front, .page-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden; /* Hide the back when looking at front */
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Hide content spilling over during turn */
+            border-radius: inherit;
+        }
+
+        /* The back side of a page needs to be flipped initially */
+        .page-back {
+            transform: rotateY(180deg);
+            background-color: #f5f3ef; /* Slightly darker to simulate back of page */
+            box-shadow: inset -5px 0 20px rgba(0,0,0,0.05);
+            border-radius: 15px 2px 2px 15px; /* Invert border radius for back */
+        }
+
+        /* Flipped state for turning pages */
+        .page.flipped {
+            transform: rotateY(-180deg);
+        }
+
+        /* z-index management for stacking pages correctly */
+        /* Will be handled largely by JS, but set defaults */
+        .page { z-index: 1; }
+
+        /* Washi Tape styling */
+        .tape {
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: absolute;
+            z-index: 10;
+        }
+
+        /* Polaroid Photo styling */
+        .polaroid {
+            background: white;
+            padding: 10px 10px 40px 10px;
+            box-shadow: 3px 3px 15px rgba(0,0,0,0.15);
+            position: relative;
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.05);
+            z-index: 20;
+        }
+        .polaroid img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        /* Navigation Buttons */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #0ea5e9;
+            color: #0ea5e9;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .nav-btn:hover {
+            background: #0ea5e9;
+            color: white;
+        }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: rgba(255,255,255,0.5);
+            color: #9ca3af;
+            border-color: #d1d5db;
+        }
+
+        /* Torn Paper Edge effect */
+        .torn-edge {
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 10 C 20 0, 40 10, 60 0 C 80 10, 100 0, 100 0 L 100 10 Z" fill="%23fdfbf7"/></svg>');
+            background-size: 100% 100%;
+            height: 10px;
+            width: 100%;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            z-index: 5;
+        }
+
+        /* Busy Scrapbook Elements */
+        .pushpin {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #7dd3fc, #0284c7);
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3), 3px 3px 5px rgba(0,0,0,0.4);
+            position: absolute;
+            z-index: 30;
+        }
+        .pushpin::after {
+            content: '';
+            position: absolute;
+            top: 4px; left: 4px;
+            width: 4px; height: 4px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+        }
+        
+        .grid-paper {
+            background-image: linear-gradient(#bae6fd 1px, transparent 1px), linear-gradient(90deg, #bae6fd 1px, transparent 1px);
+            background-size: 15px 15px;
+            background-color: #f8fafc;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e0f2fe;
+        }
+
+        .dot-paper {
+            background-image: radial-gradient(#7dd3fc 1.5px, transparent 1.5px);
+            background-size: 15px 15px;
+            background-color: #fff;
+        }
+
+        .tape-pattern {
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.4) 5px, rgba(255,255,255,0.4) 10px);
+            background-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .sticker {
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+            position: absolute;
+            z-index: 25;
+            border: 2px solid white;
+        }
+
+        .coffee-stain {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 6px solid rgba(139, 69, 19, 0.08);
+            border-left-color: transparent;
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+            transform: rotate(45deg);
+        }
+        .coffee-stain::after {
+            content: '';
+            position: absolute;
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            border: 3px solid rgba(139, 69, 19, 0.05);
+            top: 10px; left: 10px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .book {
+                width: 95vw;
+                height: 70vh;
+            }
+            .page {
+                width: 100%; /* Full width on mobile */
+                transform-origin: center top; /* Flip up instead of left */
+                transition: transform 0.6s ease;
+                border-radius: 10px;
+            }
+            .page.flipped {
+                transform: rotateX(180deg); /* Flip upwards */
+                opacity: 0; /* Hide when flipped on mobile to keep it simple */
+                pointer-events: none;
+            }
+            .page.back-cover { display: none; } /* Hide back cover on mobile */
+            .page-back { display: none; } /* Simplified 1-sided pages for mobile */
+            .page-front { padding: 1rem; }
+            .nav-btn {
+                top: auto;
+                bottom: 10px;
+            }
+            .prev-btn { left: 20%; }
+            .next-btn { right: 20%; }
+        }
+
+        /* Decorative Elements */
+        .doodle {
+            position: absolute;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* New Animations for Ornaments */
+        @keyframes flutter {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-15px) rotate(8deg) scale(1.05); }
+        }
+        .animate-flutter {
+            animation: flutter 4s ease-in-out infinite;
+        }
+        
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        .animate-float-slow {
+            animation: float-slow 5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-scrapbook-800 font-body">
+
+    <button id="prevBtn" class="nav-btn prev-btn" aria-label="Previous Page">
+        <i class="fas fa-chevron-left text-xl"></i>
+    </button>
+    
+    <button id="nextBtn" class="nav-btn next-btn" aria-label="Next Page">
+        <i class="fas fa-chevron-right text-xl"></i>
+    </button>
+
+    <div class="book" id="scrapbook">
+        
+        <!-- Back Cover (Static, left side) -->
+        <div class="page back-cover">
+            <div class="page-front flex items-center justify-center bg-scrapbook-500 border-l-4 border-scrapbook-800 overflow-hidden relative">
+                <!-- Messy background elements on back cover -->
+                <div class="absolute inset-0 opacity-20 dot-paper"></div>
+                <div class="tape w-full h-8 absolute top-10 -left-10 rotate-[15deg] bg-white/20"></div>
+                <div class="tape w-full h-12 absolute bottom-20 -right-10 rotate-[-10deg] tape-pattern"></div>
+                
+                <div class="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-white/20 shadow-lg transform rotate-[-2deg]">
+                    <p class="font-script text-white text-4xl shadow-sm">To be continued...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 4 (Last content page) -->
+        <div class="page" id="page4">
+            <div class="page-front">
+                <div class="h-full flex flex-col items-center justify-center text-center relative p-6">
+                    <!-- Layered paper background -->
+                    <div class="absolute w-64 h-64 grid-paper rotate-[5deg] z-0 shadow-sm top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                    <div class="absolute w-72 h-56 bg-white rotate-[-3deg] z-0 shadow-sm top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border border-scrapbook-100"></div>
+                    
+                    <div class="tape w-24 h-6 absolute top-[20%] left-1/4 rotate-[-12deg] z-10"></div>
+                    <div class="tape w-20 h-6 absolute bottom-[25%] right-1/4 rotate-[15deg] tape-pattern z-10"></div>
+                    
+                    <div class="pushpin absolute top-[22%] right-1/4 z-20"></div>
+
+                    <div class="relative z-10 p-4">
+                        <i class="fas fa-quote-left text-scrapbook-400 text-5xl mb-4 opacity-50 absolute -top-4 -left-4"></i>
+                        <p class="font-script text-3xl md:text-4xl leading-relaxed text-scrapbook-900 mb-6 bg-white/50 backdrop-blur-sm p-4 rounded">
+                            "You are my blue crayon, the one I never have enough of, the one I use to color my sky."
+                        </p>
+                        <p class="font-handwriting text-2xl text-scrapbook-600 bg-scrapbook-100 inline-block px-3 py-1 rotate-[-2deg]">- A.R. Asher</p>
+                    </div>
+
+                    <!-- Scattered stickers -->
+                    <div class="sticker w-8 h-8 text-yellow-400 bottom-10 right-10 rotate-12"><i class="fas fa-star"></i></div>
+                    <div class="sticker w-10 h-10 text-red-400 top-10 left-10 rotate-[-15deg]"><i class="fas fa-heart"></i></div>
+                </div>
+            </div>
+            <div class="page-back bg-paper relative overflow-hidden">
+                <!-- Messy background -->
+                <div class="absolute -right-10 -top-10 w-40 h-40 dot-paper rounded-full opacity-50"></div>
+                <div class="absolute -left-5 bottom-10 w-32 h-64 grid-paper rotate-12 opacity-40"></div>
+                
+                <div class="tape w-40 h-8 absolute top-5 -right-5 rotate-[45deg] tape-pattern"></div>
+                <div class="tape w-40 h-8 absolute bottom-5 -left-5 rotate-[45deg]"></div>
+
+                <div class="h-full flex flex-col items-center justify-center relative z-10">
+                    
+                    <!-- Overlapping photos to look crowded -->
+                    <div class="relative w-full flex justify-center items-center h-64">
+                        <div class="polaroid w-32 h-32 absolute left-4 top-10 rotate-[-15deg] opacity-70 z-0">
+                            <img src="https://placehold.co/200x200/bae6fd/0ea5e9?text=Smile" alt="Us">
+                        </div>
+                        <div class="polaroid w-32 h-32 absolute right-4 bottom-0 rotate-[20deg] opacity-70 z-0">
+                            <img src="https://placehold.co/200x200/7dd3fc/0ea5e9?text=Fun" alt="Us">
+                        </div>
+                        
+                        <div class="w-40 h-40 rounded-full border-8 border-white shadow-xl overflow-hidden relative z-10 transform rotate-[-3deg] bg-scrapbook-200 p-1">
+                            <!-- REPLACE IMAGE: Final couple picture -->
+                            <img src="https://placehold.co/400x400/0ea5e9/ffffff?text=Our+Future" alt="Us" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="pushpin absolute top-0 right-[35%] z-20"></div>
+                    </div>
+
+                    <div class="mt-8 bg-scrapbook-100 p-4 transform rotate-[2deg] shadow-sm relative">
+                        <div class="tape w-16 h-5 -top-2 left-1/2 -translate-x-1/2 rotate-[-2deg]"></div>
+                        <h3 class="font-handwriting text-4xl text-scrapbook-800 font-bold">Forever & Always</h3>
+                        <p class="font-body text-sm mt-1 text-center text-scrapbook-500 uppercase tracking-widest border-t border-scrapbook-300 pt-1">Est. 20XX</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 3 -->
+        <div class="page" id="page3">
+            <div class="page-front relative p-4">
+                
+                <!-- Messy details -->
+                <div class="absolute top-0 right-0 w-32 h-32 grid-paper rotate-[45deg] translate-x-10 -translate-y-10 shadow-sm z-0"></div>
+                <div class="tape w-full h-4 absolute top-1/2 left-0 tape-pattern opacity-50 z-0"></div>
+
+                <!-- Header -->
+                <div class="w-full text-center mb-6 relative z-10 mt-4">
+                    <div class="tape w-40 h-8 -top-3 left-1/2 -translate-x-1/2 rotate-[1deg] bg-yellow-100/60 shadow-sm"></div>
+                    <h2 class="font-handwriting text-4xl font-bold text-scrapbook-900 bg-white border-2 border-dashed border-scrapbook-300 inline-block px-6 py-2 rotate-[-2deg] shadow-sm">Memories</h2>
+                    <div class="pushpin absolute top-0 left-[25%] z-20"></div>
+                    <div class="pushpin absolute top-2 right-[25%] z-20"></div>
+                </div>
+
+                <!-- Crowded Grid of small photos -->
+                <div class="grid grid-cols-2 gap-2 h-full pb-8 relative z-10">
+                    <!-- Memory 1 -->
+                    <div class="polaroid w-full h-32 md:h-40 rotate-[8deg] z-10 relative">
+                        <div class="tape w-12 h-4 -top-2 left-2 rotate-[-15deg] bg-pink-100/70"></div>
+                        <img src="https://placehold.co/300x200/7dd3fc/082f49?text=Beach+Day" alt="Memory 1">
+                        <p class="font-handwriting text-center mt-2 text-lg">Beach Trip</p>
+                    </div>
+                    <!-- Memory 2 -->
+                    <div class="polaroid w-full h-32 md:h-40 rotate-[-12deg] mt-6 z-20 relative shadow-lg">
+                        <div class="pushpin top-1 left-1/2"></div>
+                        <img src="https://placehold.co/300x200/38bdf8/ffffff?text=Coffee+Date" alt="Memory 2">
+                        <p class="font-handwriting text-center mt-2 text-lg">Morning Coffee</p>
+                    </div>
+                    
+                    <!-- Overlapping Scrap Paper in middle -->
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-50 p-3 shadow-md rotate-[5deg] z-30 border border-yellow-200 w-3/4 text-center">
+                        <div class="tape w-10 h-4 -top-2 left-1/2 -translate-x-1/2 rotate-[-5deg]"></div>
+                        <p class="font-handwriting text-xl text-red-500">Best days ever! <i class="fas fa-heart text-sm"></i></p>
+                    </div>
+
+                    <!-- Memory 3 -->
+                    <div class="polaroid w-full h-32 md:h-40 rotate-[-5deg] z-10 relative -mt-4">
+                        <div class="tape w-16 h-5 -bottom-2 -right-2 rotate-[-45deg] tape-pattern"></div>
+                        <img src="https://placehold.co/300x200/0ea5e9/ffffff?text=Concert" alt="Memory 3">
+                        <p class="font-handwriting text-center mt-2 text-lg">That Concert!</p>
+                    </div>
+                    <!-- Memory 4 -->
+                    <div class="polaroid w-full h-32 md:h-40 rotate-[10deg] mt-2 z-20 relative">
+                        <div class="pushpin top-2 right-2"></div>
+                        <img src="https://placehold.co/300x200/075985/ffffff?text=Late+Nights" alt="Memory 4">
+                        <p class="font-handwriting text-center mt-2 text-lg">Late Nights</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="page-back">
+                <div class="h-full flex flex-col justify-center px-6 relative overflow-hidden">
+                    
+                    <!-- Scattered Elements -->
+                    <div class="absolute top-10 left-5 sticker w-10 h-10 text-scrapbook-500 rotate-[-20deg]"><i class="fas fa-camera"></i></div>
+                    <div class="absolute bottom-32 right-8 sticker w-12 h-12 text-pink-400 rotate-[15deg]"><i class="fas fa-heart text-2xl"></i></div>
+                    <div class="absolute top-1/3 -right-4 w-16 h-32 dot-paper rotate-[10deg] z-0"></div>
+
+                    <div class="bg-scrapbook-100 p-6 shadow-md border border-scrapbook-200 transform rotate-[-2deg] relative z-10">
+                        <div class="tape w-32 h-6 -top-3 left-1/4 rotate-[4deg] tape-pattern"></div>
+                        <div class="tape w-16 h-6 -top-3 right-4 rotate-[-10deg] bg-pink-100/60"></div>
+                        
+                        <h3 class="font-script text-3xl text-scrapbook-800 mb-4 border-b-2 border-dashed border-scrapbook-300 pb-2">Things I love about you:</h3>
+                        <ul class="font-handwriting text-2xl leading-relaxed space-y-3 list-none">
+                            <li class="bg-white/50 px-2 rounded transform rotate-[1deg] shadow-sm"><i class="fas fa-check text-scrapbook-500 text-sm mr-2"></i> Your beautiful smile</li>
+                            <li class="bg-white/50 px-2 rounded transform rotate-[-1deg] shadow-sm"><i class="fas fa-check text-scrapbook-500 text-sm mr-2"></i> How you make me laugh</li>
+                            <li class="bg-white/50 px-2 rounded transform rotate-[0.5deg] shadow-sm"><i class="fas fa-check text-scrapbook-500 text-sm mr-2"></i> The way your eyes light up</li>
+                            <li class="bg-white/50 px-2 rounded transform rotate-[-0.5deg] shadow-sm"><i class="fas fa-check text-scrapbook-500 text-sm mr-2"></i> Your endless support</li>
+                        </ul>
+                    </div>
+
+                    <!-- Crowded Music Player Mockup -->
+                    <div class="mt-8 bg-white p-4 rounded-xl shadow-lg flex items-center justify-between border-2 border-scrapbook-200 relative transform rotate-[3deg] z-20">
+                        <div class="pushpin -top-2 -left-2"></div>
+                        <div class="tape w-16 h-5 -bottom-2 -right-2 rotate-[-45deg]"></div>
+                        
+                        <!-- Little doodle arrow -->
+                        <svg class="absolute -top-10 right-10 w-12 h-12 text-scrapbook-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                        </svg>
+                        <p class="font-handwriting text-scrapbook-500 absolute -top-14 right-2 rotate-[10deg]">Our Jam!</p>
+
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-scrapbook-500 rounded-full flex items-center justify-center text-white shadow-inner">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm text-scrapbook-900">Our Song</p>
+                                <p class="text-xs text-scrapbook-500">Artist Name</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 text-scrapbook-500 bg-scrapbook-50 px-3 py-2 rounded-full border border-scrapbook-100">
+                            <i class="fas fa-play cursor-pointer hover:text-scrapbook-800 text-scrapbook-800"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 2 -->
+        <div class="page" id="page2">
+            <div class="page-front flex flex-col p-6 relative overflow-hidden">
+                
+                <!-- Busy details: Coffee Stain & Grid Paper -->
+                <div class="coffee-stain top-10 -right-5"></div>
+                <div class="absolute top-1/4 -left-10 w-24 h-40 grid-paper rotate-[15deg] z-0"></div>
+
+                <!-- Large Polaroid with layering -->
+                <div class="relative w-full md:w-4/5 mx-auto mt-6 z-10">
+                    <!-- Paper sticking out from behind -->
+                    <div class="absolute -inset-2 bg-yellow-50 rotate-[-4deg] shadow-sm border border-yellow-100"></div>
+                    
+                    <div class="polaroid w-full h-64 rotate-[2deg] relative z-10">
+                        <div class="tape w-24 h-8 -top-4 -left-4 rotate-[-45deg] tape-pattern"></div>
+                        <div class="tape w-24 h-8 -bottom-4 -right-4 rotate-[-45deg]"></div>
+                        <div class="pushpin top-2 right-1/2"></div>
+                        
+                        <img src="https://placehold.co/600x400/0ea5e9/ffffff?text=Our+First+Date" alt="First Date">
+                        <div class="text-center mt-3">
+                            <p class="font-handwriting text-2xl font-bold">Our First Date</p>
+                            <p class="font-body text-sm text-gray-500">May 15th, 20XX</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doodle Arrow pointing to photo -->
+                <svg class="absolute w-16 h-16 text-scrapbook-500 right-4 top-[45%] rotate-[-30deg] z-20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                </svg>
+
+                <!-- Torn Paper Note layered heavily -->
+                <div class="mt-12 relative z-20 pl-4">
+                    <div class="absolute inset-0 bg-scrapbook-200 rotate-[3deg] shadow-sm transform translate-x-2 translate-y-2"></div>
+                    <div class="bg-white p-5 relative transform rotate-[-2deg] shadow-md border-l-4 border-scrapbook-400">
+                        <div class="pushpin -top-2 left-4"></div>
+                        <div class="pushpin -bottom-2 right-4"></div>
+                        <p class="font-handwriting text-2xl leading-relaxed text-scrapbook-900">
+                            I was so nervous that day, but the moment I saw you wearing that blue jacket, everything just felt right. We talked for hours...
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="sticker w-8 h-8 text-blue-500 bottom-4 left-4 rotate-12"><i class="fas fa-star"></i></div>
+            </div>
+            
+            <div class="page-back">
+                <div class="h-full flex flex-col justify-center items-center p-8 bg-[#fdfbf7] relative">
+                    
+                    <!-- Messy background elements -->
+                    <div class="absolute top-0 left-0 w-full h-full dot-paper opacity-40"></div>
+                    <div class="tape w-full h-6 absolute top-1/4 left-0 tape-pattern rotate-[2deg] opacity-60"></div>
+                    <div class="tape w-32 h-8 absolute bottom-10 left-5 rotate-[-20deg] bg-blue-200/50"></div>
+
+                    <!-- Ticket Stub with layering -->
+                    <div class="relative z-10 w-full max-w-[250px]">
+                        <!-- Photo behind ticket -->
+                        <div class="polaroid w-32 h-32 absolute -right-10 -top-16 rotate-[15deg] z-0 shadow-sm opacity-90">
+                            <img src="https://placehold.co/150x150/e0f2fe/0ea5e9?text=Selfie" alt="Selfie">
+                        </div>
+
+                        <div class="bg-blue-50 border-2 border-dashed border-scrapbook-500 p-4 w-full relative transform rotate-[-4deg] shadow-lg z-10">
+                            <div class="tape w-16 h-5 -top-2 left-1/2 -translate-x-1/2 rotate-[5deg]"></div>
+                            
+                            <div class="w-6 h-6 bg-[#fdfbf7] rounded-full absolute -left-3 top-1/2 -translate-y-1/2 border-r-2 border-dashed border-scrapbook-500"></div>
+                            <div class="w-6 h-6 bg-[#fdfbf7] rounded-full absolute -right-3 top-1/2 -translate-y-1/2 border-l-2 border-dashed border-scrapbook-500"></div>
+                            
+                            <p class="font-body text-xs text-center text-scrapbook-600 tracking-widest uppercase mb-1">Admit Two</p>
+                            <h4 class="font-script text-3xl text-center text-scrapbook-900 border-y-2 border-scrapbook-200 py-2 my-2 font-bold">Movie Night</h4>
+                            <div class="flex justify-between font-body text-[10px] text-scrapbook-500 font-bold">
+                                <span>Row G</span>
+                                <span>Seats 12, 13</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Messy Text Section -->
+                    <div class="mt-16 text-center w-full relative z-10 bg-white/70 p-4 transform rotate-[1deg] shadow-sm border border-white">
+                        <div class="pushpin -top-3 left-1/2"></div>
+                        <h2 class="font-handwriting text-5xl text-scrapbook-800 mb-2 inline-block">Our Story</h2>
+                        <div class="tape w-32 h-2 mx-auto bg-scrapbook-300/50 mb-2"></div>
+                        <p class="font-handwriting text-2xl mt-2 text-scrapbook-700">A collection of moments, memories, and shades of blue.</p>
+                    </div>
+                    
+                    <div class="sticker w-10 h-10 text-scrapbook-400 top-10 right-10 rotate-[15deg]"><i class="fas fa-plane"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 1 (Front Cover) -->
+        <div class="page cover" id="page1">
+            <div class="page-front flex flex-col items-center justify-center p-8 relative overflow-hidden">
+                <!-- Busy Cover Design Elements -->
+                <div class="absolute inset-0 border-[10px] border-scrapbook-900 opacity-20 m-4 rounded-xl border-dashed"></div>
+                <div class="absolute inset-0 grid-paper opacity-10 m-6 rounded-xl"></div>
+                
+                <!-- Scattered Tapes on cover -->
+                <div class="tape w-40 h-10 absolute top-10 -left-10 rotate-[45deg] tape-pattern opacity-80"></div>
+                <div class="tape w-32 h-8 absolute bottom-10 -right-5 rotate-[-30deg] bg-white/30"></div>
+                <div class="tape w-20 h-6 absolute top-1/4 right-5 rotate-[15deg] bg-yellow-200/40"></div>
+
+                <!-- Layered Cover Photo -->
+                <div class="relative z-10 w-56 h-56 md:w-64 md:h-64 mb-8">
+                    <!-- Background scraps -->
+                    <div class="absolute inset-0 bg-scrapbook-300 rotate-[6deg] rounded shadow-lg"></div>
+                    <div class="absolute inset-0 dot-paper rotate-[-4deg] rounded shadow-lg border border-scrapbook-200"></div>
+                    
+                    <div class="bg-white p-3 md:p-4 rounded shadow-photo transform rotate-[-1deg] absolute inset-0 z-10">
+                        <div class="tape w-32 h-8 -top-4 left-1/2 -translate-x-1/2 bg-yellow-100/60 rotate-[-2deg] shadow-sm"></div>
+                        <div class="pushpin top-2 left-2"></div>
+                        <div class="pushpin bottom-2 right-2"></div>
+                        
+                        <!-- REPLACE IMAGE: Cover Photo -->
+                        <img src="https://placehold.co/400x400/7dd3fc/082f49?text=You+%26+Me" alt="Us" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
+                <!-- Messy Title Area -->
+                <div class="text-center relative z-20 w-full mt-4">
+                    <div class="absolute inset-0 bg-white/10 backdrop-blur-md transform rotate-[2deg] scale-110 shadow-lg border-y border-white/30"></div>
+                    
+                    <div class="relative p-4 transform rotate-[-1deg]">
+                        <div class="tape w-16 h-5 -top-2 left-4 rotate-[-15deg] bg-white/40"></div>
+                        <h1 class="font-script text-6xl md:text-7xl font-bold tracking-wider text-white drop-shadow-xl mb-2">
+                            Alex & Jamie
+                        </h1>
+                        <p class="font-handwriting text-3xl text-yellow-100 tracking-widest bg-scrapbook-900/40 inline-block px-4 py-1 rounded-sm shadow-inner rotate-[1deg]">
+                            Our Adventures
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Scattered cover stickers -->
+                <div class="sticker w-12 h-12 text-scrapbook-500 bottom-20 left-10 rotate-[-20deg] shadow-lg"><i class="fas fa-heart text-2xl"></i></div>
+                <div class="sticker w-8 h-8 text-yellow-400 top-20 left-12 rotate-[15deg]"><i class="fas fa-star"></i></div>
+                
+                <!-- Ribbon bookmark -->
+                <div class="absolute -right-2 top-20 w-6 h-40 bg-scrapbook-200 shadow-xl transform translate-x-1/2 border-l-2 border-scrapbook-100 flex flex-col items-center pt-2">
+                    <div class="w-2 h-2 rounded-full bg-scrapbook-400 mb-1"></div>
+                    <div class="w-2 h-2 rounded-full bg-scrapbook-400 mb-1"></div>
+                    <div class="w-2 h-2 rounded-full bg-scrapbook-400"></div>
+                </div>
+            </div>
+            <div class="page-back">
+                <!-- Blank inside of cover (Messy) -->
+                <div class="h-full w-full bg-[#e0f2fe] border-8 border-white flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 grid-paper opacity-50"></div>
+                    <div class="tape w-full h-8 absolute top-1/3 -left-4 rotate-[-5deg] tape-pattern"></div>
+                    
+                    <div class="bg-white/80 p-6 rounded-full border border-dashed border-scrapbook-400 transform rotate-[-15deg] shadow-inner relative z-10">
+                        <p class="font-handwriting text-scrapbook-600 text-2xl font-bold">Property of A & J</p>
+                        <p class="font-body text-xs text-center text-scrapbook-400 uppercase mt-1">If found, please return</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get all pages and navigation buttons
+            const pages = document.querySelectorAll('.page:not(.back-cover)'); // Exclude static back cover
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Convert NodeList to Array and reverse it so page 1 is index 0
+            const pagesArray = Array.from(pages).reverse();
+            
+            let currentPageIndex = 0;
+            const totalPages = pagesArray.length;
+
+            // Function to set initial z-indexes
+            function setupPages() {
+                pagesArray.forEach((page, index) => {
+                    // Lower index = higher z-index (front pages on top)
+                    page.style.zIndex = totalPages - index;
+                });
+                updateButtons();
+            }
+
+            // Function to handle flipping to next page
+            function nextPage() {
+                if (currentPageIndex < totalPages) {
+                    const pageToFlip = pagesArray[currentPageIndex];
+                    
+                    // Add flipped class
+                    pageToFlip.classList.add('flipped');
+                    
+                    // Adjust z-index after flipping so it goes behind the remaining right-side pages
+                    // but stays above other flipped pages
+                    setTimeout(() => {
+                        pageToFlip.style.zIndex = currentPageIndex + 1;
+                    }, 400); // Change z-index halfway through the animation
+                    
+                    currentPageIndex++;
+                    updateButtons();
+                }
+            }
+
+            // Function to handle flipping to previous page
+            function prevPage() {
+                if (currentPageIndex > 0) {
+                    currentPageIndex--;
+                    const pageToUnflip = pagesArray[currentPageIndex];
+                    
+                    // Restore z-index before unflipping
+                    pageToUnflip.style.zIndex = totalPages - currentPageIndex;
+                    
+                    // Remove flipped class
+                    pageToUnflip.classList.remove('flipped');
+                    
+                    updateButtons();
+                }
+            }
+
+            // Update button disabled states
+            function updateButtons() {
+                prevBtn.disabled = currentPageIndex === 0;
+                nextBtn.disabled = currentPageIndex === totalPages;
+            }
+
+            // Event Listeners for Buttons
+            nextBtn.addEventListener('click', nextPage);
+            prevBtn.addEventListener('click', prevPage);
+
+            // Allow clicking on the right side of the book to go next, left side to go prev
+            // Useful for a more natural feel, especially on mobile
+            document.getElementById('scrapbook').addEventListener('click', (e) => {
+                // Don't trigger if they clicked a button specifically
+                if(e.target.closest('button')) return;
+
+                const bookRect = document.getElementById('scrapbook').getBoundingClientRect();
+                const clickX = e.clientX - bookRect.left;
+                
+                // If clicked on the right half, go next. Left half, go prev.
+                if (clickX > bookRect.width / 2) {
+                    nextPage();
+                } else {
+                    prevPage();
+                }
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+                    nextPage();
+                } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                    prevPage();
+                }
+            });
+
+            // Initialize
+            setupPages();
+        });
+    </script>
+</body>
+</html>

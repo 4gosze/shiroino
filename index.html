@@ -3,310 +3,1099 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shiroino ✨</title>
+    <title>For Shiroino 💙</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts for both Main Screen and Scrapbook -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Dancing+Script:wght@400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:wght@300;400;500;600;700&family=Playball&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        scrapbook: {
+                            100: '#e0f2fe', 
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8', 
+                            500: '#0ea5e9',
+                            800: '#075985', 
+                            900: '#082f49', 
+                        },
+                        paper: '#fdfbf7', 
+                        tape: 'rgba(255, 255, 255, 0.4)'
+                    },
+                    fontFamily: {
+                        handwriting: ['Caveat', 'cursive'],
+                        script: ['Dancing Script', 'cursive'],
+                        body: ['Open Sans', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'page': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+                        'photo': '3px 3px 10px rgba(0, 0, 0, 0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&family=Dancing+Script:wght@600&display=swap');
-
+        /* === MAIN APP STYLES === */
         body {
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 50%, #e0f2fe 100%);
-            min-height: 100vh;
-            scroll-behavior: smooth;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #1d4ed8, #3b82f6, #60a5fa, #1e3a8a);
+            background-size: 400% 400%;
+            animation: elegantGradient 7s ease infinite; 
+            height: 100vh;
         }
 
-        .cursive { font-family: 'Dancing Script', cursive; }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        @keyframes elegantGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .floating { animation: float 6s ease-in-out infinite; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-15px) rotate(1deg); }
-            66% { transform: translateY(-5px) rotate(-1deg); }
-        }
-
-        .heart {
-            position: absolute;
-            color: #60a5fa;
-            pointer-events: none;
-            z-index: 0;
-            filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.3));
-            animation: rise linear forwards;
-        }
-
-        @keyframes rise {
-            0% { transform: translateY(110vh) translateX(0) scale(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.8; transform: translateY(90vh) translateX(10px) scale(1) rotate(10deg); }
-            100% { transform: translateY(-20vh) translateX(-20px) scale(1.5) rotate(360deg); opacity: 0; }
-        }
-
-        .sparkle-mouse {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #60a5fa;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 999;
+        .premium-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.2), 0 10px 30px rgba(29, 78, 216, 0.1);
+            transform: translateY(30px);
             opacity: 0;
-            filter: blur(2px);
-            animation: particle-fade 0.8s ease-out forwards;
+            animation: smoothSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards, gentleFloat 5s ease-in-out infinite 1.2s;
         }
 
-        @keyframes particle-fade {
-            from { transform: scale(1); opacity: 0.6; }
-            to { transform: scale(0.1); opacity: 0; }
+        @keyframes smoothSlideUp {
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        .btn-ai {
-            background: linear-gradient(to right, #1e3a8a, #1e40af);
-            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(0.5deg); }
         }
 
-        #memory-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(8px);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 2.5rem;
-            max-width: 500px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-        }
-
-        .loader {
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid #ffffff;
+        .sparkle-particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
             border-radius: 50%;
+            pointer-events: none;
+            bottom: -20px;
+            animation: floatSparkle linear infinite;
+        }
+
+        @keyframes floatSparkle {
+            0% { transform: translateY(0) scale(0) rotate(0deg); opacity: 0; }
+            15% { opacity: 0.6; }
+            85% { opacity: 0.6; }
+            100% { transform: translateY(-105vh) scale(1.5) rotate(180deg); opacity: 0; }
+        }
+
+        .screen-transition { transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .screen-hidden { opacity: 0; transform: scale(0.95) translateY(20px); pointer-events: none; position: absolute; visibility: hidden; }
+        .screen-visible { opacity: 1; transform: scale(1) translateY(0); position: relative; visibility: visible; }
+
+        .scrapbook-wrapper-hidden { opacity: 0; pointer-events: none; visibility: hidden; transition: all 0.5s ease; z-index: -10; }
+        .scrapbook-wrapper-visible { opacity: 1; pointer-events: auto; visibility: visible; transition: all 0.5s ease; z-index: 100; }
+
+        .typing-cursor { border-right: 2px solid #2563eb; animation: blinkCursor 0.8s step-end infinite; }
+        @keyframes blinkCursor { from, to { border-color: transparent } 50% { border-color: #2563eb; } }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        /* === SCRAPBOOK STYLES === */
+        #scrapbook-screen {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        .book {
+            position: relative;
+            width: 90vw;
+            max-width: 800px;
+            height: 85vh;
+            max-height: 600px;
+            perspective: 1500px; 
+            display: flex;
+        }
+
+        .page {
+            position: absolute;
+            width: 50%; 
+            height: 100%;
+            top: 0;
+            right: 0; 
+            transform-origin: left center; 
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            background-color: #fdfbf7;
+            border-radius: 2px 15px 15px 2px;
+            box-shadow: inset 5px 0 20px rgba(0,0,0,0.05), -2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .page.cover {
+            background-color: #0ea5e9; 
+            border-radius: 5px 20px 20px 5px;
+            box-shadow: inset 10px 0 30px rgba(0,0,0,0.2), 5px 5px 15px rgba(0,0,0,0.3);
+            color: white;
+            border: 2px solid #075985;
+        }
+
+        /* Diperbarui agar berada di bagian kanan dan bertindak sebagai cover penutup */
+        .page.back-cover {
+            right: 0;
+            left: auto;
+            transform-origin: left center;
+            border-radius: 5px 20px 20px 5px;
+            box-shadow: inset 10px 0 30px rgba(0,0,0,0.2), 5px 5px 15px rgba(0,0,0,0.3);
+            z-index: 0;
+            background-color: #0ea5e9;
+            border: 2px solid #075985;
+        }
+
+        .page-front, .page-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden; 
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+            border-radius: inherit;
+        }
+
+        .page-back {
+            transform: rotateY(180deg);
+            background-color: #f5f3ef; 
+            box-shadow: inset -5px 0 20px rgba(0,0,0,0.05);
+            border-radius: 15px 2px 2px 15px; 
+        }
+
+        .page.flipped {
+            transform: rotateY(-180deg);
+        }
+
+        .page { z-index: 1; }
+
+        .tape {
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: absolute;
+            z-index: 10;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 10px 10px 40px 10px;
+            box-shadow: 3px 3px 15px rgba(0,0,0,0.15);
+            position: relative;
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.05);
+            z-index: 20;
+        }
+        .polaroid img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #0ea5e9;
+            color: #0ea5e9;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .nav-btn:hover {
+            background: #0ea5e9;
+            color: white;
+        }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: rgba(255,255,255,0.5);
+            color: #9ca3af;
+            border-color: #d1d5db;
+        }
+
+        .pushpin {
             width: 16px;
             height: 16px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #7dd3fc, #0284c7);
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3), 3px 3px 5px rgba(0,0,0,0.4);
+            position: absolute;
+            z-index: 30;
+        }
+        .pushpin::after {
+            content: '';
+            position: absolute;
+            top: 4px; left: 4px;
+            width: 4px; height: 4px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+        }
+        
+        .grid-paper {
+            background-image: linear-gradient(#bae6fd 1px, transparent 1px), linear-gradient(90deg, #bae6fd 1px, transparent 1px);
+            background-size: 15px 15px;
+            background-color: #f8fafc;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e0f2fe;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .dot-paper {
+            background-image: radial-gradient(#7dd3fc 1.5px, transparent 1.5px);
+            background-size: 15px 15px;
+            background-color: #fff;
+        }
+
+        .tape-pattern {
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.4) 5px, rgba(255,255,255,0.4) 10px);
+            background-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .sticker {
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+            position: absolute;
+            z-index: 25;
+            border: 2px solid white;
+        }
+
+        .coffee-stain {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 6px solid rgba(139, 69, 19, 0.08);
+            border-left-color: transparent;
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+            transform: rotate(45deg);
+        }
+        .coffee-stain::after {
+            content: '';
+            position: absolute;
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            border: 3px solid rgba(139, 69, 19, 0.05);
+            top: 10px; left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .book { width: 95vw; height: 70vh; }
+            .page {
+                width: 100%; 
+                transform-origin: center top; 
+                transition: transform 0.6s ease;
+                border-radius: 10px;
+            }
+            .page.flipped {
+                transform: rotateX(180deg); 
+                opacity: 0; 
+                pointer-events: none;
+            }
+            .page-back { display: none; } 
+            .page-front { padding: 1rem; }
+            .nav-btn { top: auto; bottom: 10px; }
+            .prev-btn { left: 20%; }
+            .next-btn { right: 20%; }
+        }
+
+        @keyframes flutter {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-15px) rotate(8deg) scale(1.05); }
+        }
+        .animate-flutter { animation: flutter 4s ease-in-out infinite; }
         
-        .photo-square { grid-column: span 1; aspect-ratio: 1 / 1; }
-        .photo-landscape { grid-column: span 2; aspect-ratio: 16 / 9; }
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        .animate-float-slow { animation: float-slow 5s ease-in-out infinite; }
     </style>
 </head>
-<body class="relative">
+<body class="flex items-center justify-center text-slate-800 relative select-none font-poppins">
 
-    <div class="fixed inset-0 overflow-hidden pointer-events-none" id="background-layer"></div>
+    <div id="particles-container" class="absolute inset-0 overflow-hidden z-0"></div>
+    <audio id="main-audio" preload="metadata" loop>
+        <source src="summer.mp3" type="audio/mpeg"> 
+    </audio>
 
-    <main class="min-h-screen flex items-center justify-center p-6 relative z-10">
-        <div class="glass p-8 md:p-10 rounded-[2.5rem] max-w-md w-full text-center floating" id="main-card">
-            
-            <div class="mb-6 flex justify-center">
-                <div class="relative">
-                    <div class="bg-blue-50 p-6 rounded-full relative z-10">
-                        <i data-lucide="sun" id="weather-icon" class="w-12 h-12 text-blue-500"></i>
-                    </div>
-                    <div class="absolute inset-0 bg-blue-400 rounded-full opacity-20 scale-125 animate-ping"></div>
+    <div id="main-ui-wrapper" class="premium-card w-full max-w-[450px] mx-4 p-10 rounded-[2.5rem] z-10 text-center relative overflow-hidden transition-all duration-500">
+        
+        <div id="main-screen" class="screen-transition screen-visible flex flex-col items-center">
+            <div class="relative w-32 h-32 flex items-center justify-center mb-6">
+                <div class="absolute w-28 h-28 bg-blue-100/50 rounded-full animate-ping opacity-60"></div>
+                <div class="absolute w-24 h-24 bg-blue-50 rounded-full animate-pulse opacity-80"></div>
+                <div class="relative w-20 h-20 bg-blue-100/60 rounded-full flex items-center justify-center border border-blue-200/40 shadow-inner">
+                    <svg class="w-10 h-10 text-blue-500/90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
                 </div>
             </div>
 
-            <div class="space-y-1 mb-4">
-                <p class="text-blue-400 font-semibold tracking-widest uppercase text-xs">A special gift for you</p>
-                <h1 id="greeting-text" class="text-3xl font-bold text-blue-800">Good Morning,</h1>
-                <h2 class="text-5xl cursive text-blue-600">Shiroino</h2>
-            </div>
+            <p class="text-blue-500 font-bold text-xs uppercase tracking-[0.25em] mb-3">A Special Gift For You</p>
+            
+            <h1 id="greeting-title" class="text-4xl font-extrabold text-blue-950 tracking-tight leading-tight">Good Night,</h1>
+            <h2 class="font-['Playball'] text-6xl text-blue-600 font-normal mt-2 mb-8">Shiroino</h2>
 
-            <div class="bg-white/30 rounded-2xl p-5 mb-6 min-h-[100px] flex items-center justify-center border border-white/40 shadow-sm transition-all duration-500">
-                <p id="morning-quote" class="text-blue-800 text-lg leading-relaxed font-medium transition-opacity duration-300">
-                    "May your day be as bright as your smile this morning."
+            <div class="bg-blue-50/60 border border-blue-100/30 rounded-2xl py-5 px-8 mb-6 shadow-sm w-full">
+                <p id="greeting-quote" class="text-blue-800 text-base md:text-lg italic leading-relaxed font-medium">
+                    "The stars are shining, and so is your inner strength. Rest well, Shiroino."
                 </p>
             </div>
 
-            <div class="mb-6 text-left bg-slate-900 p-5 rounded-3xl border border-blue-800 shadow-xl">
-                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-1 mb-2 block">Dream Alchemist ✨</label>
-                <div class="relative">
-                    <input id="dream-input" type="text" placeholder="Share your dream or mood..." 
-                        class="w-full bg-slate-800 border border-blue-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder:text-blue-300/30 text-blue-100">
-                    <button onclick="interpretDream()" class="absolute right-2 top-1.5 text-blue-400 hover:text-blue-200 transition-colors">
-                        <i data-lucide="sparkles" class="w-5 h-5"></i>
-                    </button>
-                </div>
-                <div id="ai-response" class="hidden mt-3 p-3 bg-slate-800/50 rounded-xl text-xs text-blue-200 italic leading-relaxed border border-blue-700/50"></div>
+            <div class="w-full text-left px-2 mb-2 flex justify-between items-center">
+                <span class="text-[11px] text-blue-600/90 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    Summer - Yejun PLAVE
+                </span>
             </div>
 
-            <div class="flex flex-col space-y-3">
-                <button onclick="window.location.href='happy-birthday.html'" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white font-bold py-4 px-6 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-xl flex items-center justify-center space-x-2">
-                    <i data-lucide="gift" class="w-5 h-5"></i>
-                    <span>Happy Birthday Surprise! 🎂</span>
+            <div class="w-full flex items-center gap-3 px-2 mb-8">
+                <button id="play-btn" onclick="toggleLocalAudio()" class="w-10 h-10 flex items-center justify-center bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full transition-all active:scale-90 flex-shrink-0 shadow-sm" title="Play/Pause">
+                    <svg id="play-icon" class="w-4 h-4 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                    <svg id="pause-icon" class="w-4 h-4 fill-current hidden" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
                 </button>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="generateAdventure()" class="btn-ai text-white font-bold py-3 rounded-2xl transition-all transform hover:scale-105 text-sm">
-                        Mini-Quest ✨
-                    </button>
-                    <button onclick="toggleModal()" class="bg-white border-2 border-blue-400 text-blue-500 font-bold py-3 rounded-2xl transition-all transform hover:scale-105 text-sm">
-                        Memories
-                    </button>
-                </div>
+                <input id="audio-progress" type="range" class="flex-grow h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600 outline-none" min="0" value="0" max="100">
+                <span id="time-display" class="text-[10px] text-slate-400 font-bold tracking-tight tabular-nums min-w-[60px] text-right">0:00/0:00</span>
             </div>
+
+            <button onclick="openLetterScreen()" class="w-full bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-semibold py-4 px-8 rounded-full shadow-lg hover:shadow-blue-300/50 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 text-base md:text-lg mb-3">
+                Read a Special Letter 💙
+            </button>
+            
+            <button onclick="openScrapbookScreen()" class="w-full border border-blue-200 hover:bg-blue-50 text-blue-600 font-semibold py-4 px-8 rounded-full shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 text-base md:text-lg">
+                Our Scrapbook 📸
+            </button>
         </div>
-    </main>
 
-    <div id="memory-modal" onclick="closeModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-start mb-2">
-                <div>
-                    <h3 class="text-2xl font-bold text-blue-800">Our Memories ✨</h3>
-                    <p class="text-blue-400 text-sm font-medium">Since Dec 20, 2025</p>
-                </div>
-                <button onclick="toggleModal()" class="text-gray-400 hover:text-blue-500 transition-colors p-2">
-                    <i data-lucide="x"></i>
-                </button>
+        <div id="letter-screen" class="screen-transition screen-hidden flex flex-col items-center">
+            <div class="text-5xl mb-6 animate-bounce">💌</div>
+            <h3 class="text-2xl font-bold text-blue-950 mb-6">To My Dearest Shiroino</h3>
+            
+            <div class="flex justify-center items-center bg-blue-50/40 border border-blue-100/50 p-8 rounded-3xl mb-8 w-full shadow-inner min-h-[220px]">
+                <p id="typed-message" class="text-slate-800 text-lg md:text-xl leading-relaxed font-medium typing-cursor text-center">Loading...</p>
             </div>
-            <div class="bg-blue-50 rounded-2xl p-4 mb-6 text-center shadow-sm">
-                <div id="lifetime-timer" class="text-blue-800 font-bold text-xl tabular-nums">0d 0h 0m 0s</div>
+
+            <div class="flex gap-4 w-full">
+                <button onclick="closeLetterScreen()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-4 px-6 rounded-full text-sm md:text-base transition-all">Back ↺</button>
+                <button onclick="regenerateCuteLetter()" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold py-4 px-6 rounded-full text-sm md:text-base border border-blue-200/50 transition-all">Another Letter ✨</button>
             </div>
-            <div class="grid grid-cols-2 gap-4" id="gallery-container"></div>
-            <p class="mt-6 text-center text-blue-400 italic text-sm">"Every picture tells a story, especially ours."</p>
         </div>
     </div>
 
-    <footer class="py-10 text-center text-blue-400 text-[10px] tracking-widest uppercase font-bold opacity-60">
-        <p>With Love for Shiroino &bull; 2026</p>
-    </footer>
+    <div id="scrapbook-screen" class="scrapbook-wrapper-hidden fixed inset-0 flex items-center justify-center font-body">
+        
+        <button onclick="closeScrapbookScreen()" class="absolute top-6 left-6 md:top-8 md:left-8 z-[110] bg-white/90 backdrop-blur-md border border-white px-6 py-3 rounded-full text-blue-800 hover:bg-white font-semibold transition-all shadow-xl flex items-center gap-2 hover:-translate-x-1">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+
+        <div class="relative w-full h-full flex items-center justify-center">
+            <button id="prevBtn" class="nav-btn prev-btn" aria-label="Previous Page">
+                <i class="fas fa-chevron-left text-xl"></i>
+            </button>
+            
+            <button id="nextBtn" class="nav-btn next-btn" aria-label="Next Page">
+                <i class="fas fa-chevron-right text-xl"></i>
+            </button>
+
+            <div class="book" id="scrapbook">
+                
+                <!-- Back Cover (Sekarang ada di paling kanan!) -->
+                <div class="page back-cover">
+                    <div class="page-front flex items-center justify-center bg-scrapbook-500 border-l-4 border-scrapbook-800">
+                        <div class="absolute inset-0 opacity-20 dot-paper"></div>
+                        <div class="tape w-full h-8 absolute top-10 -left-10 rotate-[15deg] bg-white/20"></div>
+                        <div class="tape w-full h-12 absolute bottom-20 -right-10 rotate-[-10deg] tape-pattern"></div>
+                        
+                        <div class="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-white/20 shadow-lg transform rotate-[-2deg] z-10">
+                            <p class="font-script text-white text-4xl shadow-sm">To be continued...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 5 (Halaman Terakhir sebelum Back Cover) -->
+                <div class="page" id="page5">
+                    <div class="page-front bg-[#f8fafc] p-6 flex flex-col justify-center">
+                        <div class="absolute inset-0 dot-paper opacity-60"></div>
+                        <div class="absolute top-10 -right-10 w-32 h-32 grid-paper rotate-[20deg] opacity-50 z-0"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="tape w-32 h-8 -top-4 right-10 rotate-[5deg] tape-pattern"></div>
+                            <div class="pushpin top-2 left-4"></div>
+                            
+                            <div class="polaroid w-full h-56 rotate-[-3deg] shadow-lg mb-6 bg-white p-3">
+                                <div class="w-full h-full bg-scrapbook-800 border border-scrapbook-200 flex flex-col items-center justify-center text-white/80 overflow-hidden relative">
+                                    <div class="absolute top-4 right-6 w-8 h-8 bg-yellow-100 rounded-full shadow-[0_0_15px_rgba(254,240,138,0.5)]"></div>
+                                    <div class="absolute top-8 left-10 w-1 h-1 bg-white rounded-full"></div>
+                                    <div class="absolute top-20 left-24 w-1.5 h-1.5 bg-white rounded-full"></div>
+                                    <div class="absolute bottom-10 right-20 w-1 h-1 bg-white rounded-full"></div>
+                                    <i class="fas fa-moon text-4xl mt-4 opacity-70"></i>
+                                </div>
+                                <p class="font-handwriting text-center mt-3 text-xl text-scrapbook-900">.......</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 relative z-10 w-11/12 mx-auto">
+                            <div class="absolute inset-0 bg-scrapbook-100 rotate-[-2deg] shadow-sm"></div>
+                            <div class="bg-white/90 backdrop-blur-sm p-5 relative rotate-[2deg] shadow-md border-t-4 border-scrapbook-400 text-center">
+                                <div class="tape w-16 h-5 -top-2 left-1/2 -translate-x-1/2 rotate-[-5deg] bg-yellow-100/50"></div>
+                                <p class="font-handwriting text-2xl text-scrapbook-800 leading-relaxed mt-2">
+                                    Talking with you about everything is my absolute favorite things. 🌙
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="sticker w-8 h-8 text-yellow-500 top-20 left-4 rotate-12 z-20"><i class="fas fa-star"></i></div>
+
+                        <div class="absolute bottom-6 right-6 z-20 transform rotate-[3deg] text-scrapbook-800 flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-scrapbook-300 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-scrapbook-400"></span>
+                            </span>
+                            <p class="font-handwriting text-3xl">flip page...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="page-back p-6 bg-paper">
+                        <div class="absolute top-0 left-0 w-32 h-32 grid-paper rotate-[-15deg] shadow-sm z-0"></div>
+                        <div class="absolute -bottom-10 -right-10 w-48 h-48 dot-paper opacity-40 rounded-full z-0"></div>
+                        
+                        <div class="h-full flex flex-col items-center justify-center relative z-10">
+                            
+                            <div class="relative mb-8 text-center">
+                                <div class="tape w-40 h-8 -top-4 left-1/2 -translate-x-1/2 rotate-[-2deg] bg-pink-100/60 shadow-sm"></div>
+                                <h3 class="font-script text-4xl font-bold text-scrapbook-900 bg-white px-6 py-3 rotate-[1deg] shadow-md border-2 border-dashed border-scrapbook-300">
+                                    Little Details
+                                </h3>
+                                <div class="pushpin absolute top-2 right-[-10px] z-20"></div>
+                            </div>
+
+                            <div class="w-full max-w-[280px] space-y-4">
+                                <div class="bg-scrapbook-50 p-3 shadow-sm rotate-[2deg] flex items-center gap-4 border border-scrapbook-200">
+                                    <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center flex-shrink-0 text-pink-500">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <span class="font-handwriting text-2xl text-scrapbook-800">Your warm smile</span>
+                                </div>
+                                
+                                <div class="bg-scrapbook-50 p-3 shadow-sm rotate-[-3deg] flex items-center gap-4 border border-scrapbook-200 ml-4">
+                                    <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0 text-yellow-500">
+                                        <i class="fas fa-sun"></i>
+                                    </div>
+                                    <span class="font-handwriting text-2xl text-scrapbook-800">Morning n Night texts</span>
+                                </div>
+
+                                <div class="bg-scrapbook-50 p-3 shadow-sm rotate-[1deg] flex items-center gap-4 border border-scrapbook-200">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 text-blue-500">
+                                        <i class="fas fa-coffee"></i>
+                                    </div>
+                                    <span class="font-handwriting text-2xl text-scrapbook-800">Noodle dates</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-10 bg-white p-3 rotate-[-4deg] shadow-lg border border-scrapbook-100">
+                                <div class="tape w-12 h-4 -top-2 left-4 rotate-[15deg]"></div>
+                                <p class="font-handwriting text-xl text-scrapbook-500 italic">"It's the little things..."</p>
+                            </div>
+
+                            <div class="sticker w-12 h-12 text-blue-400 bottom-8 right-6 rotate-12"><i class="fas fa-cloud"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 4 -->
+                <div class="page" id="page4">
+                    <div class="page-front p-6">
+                        <div class="h-full flex flex-col items-center justify-center text-center relative">
+                            <div class="absolute w-64 h-64 grid-paper rotate-[5deg] z-0 shadow-sm top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                            <div class="absolute w-72 h-56 bg-white rotate-[-3deg] z-0 shadow-sm top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border border-scrapbook-100"></div>
+                            
+                            <div class="tape w-24 h-6 absolute top-[20%] left-1/4 rotate-[-12deg] z-10"></div>
+                            <div class="tape w-20 h-6 absolute bottom-[25%] right-1/4 rotate-[15deg] tape-pattern z-10"></div>
+                            <div class="pushpin absolute top-[22%] right-1/4 z-20"></div>
+
+                            <div class="relative z-10 p-4">
+                                <i class="fas fa-quote-left text-scrapbook-400 text-5xl mb-4 opacity-50 absolute -top-4 -left-4"></i>
+                                <p class="font-script text-3xl md:text-4xl leading-relaxed text-scrapbook-900 mb-6 bg-white/50 backdrop-blur-sm p-4 rounded">
+                                    "You are my blue crayon, the one I never have enough of, the one I use to color my sky."
+                                </p>
+                                <p class="font-handwriting text-2xl text-scrapbook-600 bg-scrapbook-100 inline-block px-3 py-1 rotate-[-2deg]">- A.R. Asher</p>
+                            </div>
+
+                            <div class="sticker w-8 h-8 text-yellow-400 bottom-10 right-10 rotate-12 z-20"><i class="fas fa-star"></i></div>
+                            <div class="sticker w-10 h-10 text-red-400 top-10 left-10 rotate-[-15deg] z-20"><i class="fas fa-heart"></i></div>
+                        </div>
+                    </div>
+                    <div class="page-back bg-paper">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 dot-paper rounded-full opacity-50"></div>
+                        <div class="absolute -left-5 bottom-10 w-32 h-64 grid-paper rotate-12 opacity-40"></div>
+                        
+                        <div class="tape w-40 h-8 absolute top-5 -right-5 rotate-[45deg] tape-pattern z-20"></div>
+                        <div class="tape w-40 h-8 absolute bottom-5 -left-5 rotate-[45deg] z-20"></div>
+
+                        <div class="h-full flex flex-col items-center justify-center relative z-10">
+                            <div class="relative w-full flex justify-center items-center h-64">
+                                <div class="polaroid w-32 h-32 absolute left-4 top-10 rotate-[-15deg] opacity-70 z-0">
+                                    <img src="sc9.png" alt="Us" onerror="this.src='https://placehold.co/150x150/bae6fd/0ea5e9?text=Memory'">
+                                </div>
+                                <div class="polaroid w-32 h-32 absolute right-4 bottom-0 rotate-[20deg] opacity-70 z-0">
+                                    <img src="sc10.png" alt="Us" onerror="this.src='https://placehold.co/150x150/bae6fd/0ea5e9?text=Memory'">
+                                </div>
+                                
+                                <div class="w-40 h-40 rounded-full border-8 border-white shadow-xl overflow-hidden relative z-10 transform rotate-[-3deg] bg-scrapbook-200 p-1">
+                                    <img src="sc8.png" alt="Us" class="w-full h-full object-cover rounded-full" onerror="this.src='https://placehold.co/200x200/7dd3fc/075985?text=Us'">
+                                </div>
+                                <div class="pushpin absolute top-0 right-[35%] z-20"></div>
+                            </div>
+
+                            <div class="mt-8 bg-scrapbook-100 p-4 transform rotate-[2deg] shadow-sm relative z-10">
+                                <div class="tape w-16 h-5 -top-2 left-1/2 -translate-x-1/2 rotate-[-2deg]"></div>
+                                <h3 class="font-handwriting text-4xl text-scrapbook-800 font-bold">Forever & Always</h3>
+                                <p class="font-body text-sm mt-1 text-center text-scrapbook-500 uppercase tracking-widest border-t border-scrapbook-300 pt-1">Est. 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 3 -->
+                <div class="page" id="page3">
+                    <div class="page-front p-4">
+                        <div class="absolute top-0 right-0 w-32 h-32 grid-paper rotate-[45deg] translate-x-10 -translate-y-10 shadow-sm z-0"></div>
+                        <div class="tape w-full h-4 absolute top-1/2 left-0 tape-pattern opacity-50 z-0"></div>
+
+                        <div class="w-full text-center mb-6 relative z-10 mt-4">
+                            <div class="tape w-40 h-8 -top-3 left-1/2 -translate-x-1/2 rotate-[1deg] bg-yellow-100/60 shadow-sm"></div>
+                            <h2 class="font-handwriting text-4xl font-bold text-scrapbook-900 bg-white border-2 border-dashed border-scrapbook-300 inline-block px-6 py-2 rotate-[-2deg] shadow-sm">Memories</h2>
+                            <div class="pushpin absolute top-0 left-[25%] z-20"></div>
+                            <div class="pushpin absolute top-2 right-[25%] z-20"></div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 h-full pb-8 relative z-10">
+                            <div class="polaroid w-full h-32 md:h-40 rotate-[8deg] z-10 relative">
+                                <div class="tape w-12 h-4 -top-2 left-2 rotate-[-15deg] bg-pink-100/70"></div>
+                                <img src="sc3.png" alt="Memory 1" onerror="this.src='https://placehold.co/150x150/e0f2fe/0ea5e9?text=Trip'">
+                                <p class="font-handwriting text-center mt-2 text-lg">NUANU Trip</p>
+                            </div>
+                            <div class="polaroid w-full h-32 md:h-40 rotate-[-12deg] mt-6 z-20 relative shadow-lg">
+                                <div class="pushpin top-1 left-1/2"></div>
+                                <img src="sc4.png" alt="Memory 2" onerror="this.src='https://placehold.co/150x150/e0f2fe/0ea5e9?text=Date'">
+                                <p class="font-handwriting text-center mt-2 text-lg">InCRIME</p>
+                            </div>
+                            
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-50 p-3 shadow-md rotate-[5deg] z-30 border border-yellow-200 w-3/4 text-center">
+                                <div class="tape w-10 h-4 -top-2 left-1/2 -translate-x-1/2 rotate-[-5deg]"></div>
+                                <p class="font-handwriting text-xl text-blue-500">Best days ever! <i class="fas fa-heart text-sm"></i></p>
+                            </div>
+
+                            <div class="polaroid w-full h-32 md:h-40 rotate-[-5deg] z-10 relative -mt-4">
+                                <div class="tape w-16 h-5 -bottom-2 -right-2 rotate-[-45deg] tape-pattern"></div>
+                                <img src="sc5.png" alt="Memory 3" onerror="this.src='https://placehold.co/150x150/e0f2fe/0ea5e9?text=Cafe'">
+                                <p class="font-handwriting text-center mt-2 text-lg">NAKO</p>
+                            </div>
+                            <div class="polaroid w-full h-32 md:h-40 rotate-[10deg] mt-2 z-20 relative">
+                                <div class="pushpin top-2 right-2"></div>
+                                <img src="sc6.png" alt="Memory 4" onerror="this.src='https://placehold.co/150x150/e0f2fe/0ea5e9?text=Food'">
+                                <p class="font-handwriting text-center mt-2 text-lg">Wagyu TIME</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="page-back">
+                        <div class="h-full flex flex-col justify-center px-6 relative">
+                            <div class="absolute top-10 left-5 sticker w-10 h-10 text-scrapbook-500 rotate-[-20deg] z-0"><i class="fas fa-camera"></i></div>
+                            <div class="absolute bottom-32 right-8 sticker w-12 h-12 text-pink-400 rotate-[15deg] z-0"><i class="fas fa-heart text-2xl"></i></div>
+                            <div class="absolute top-1/3 -right-4 w-16 h-32 dot-paper rotate-[10deg] z-0"></div>
+
+                            <div class="bg-scrapbook-100 p-6 shadow-md border border-scrapbook-200 transform rotate-[-2deg] relative z-10">
+                                <div class="tape w-32 h-6 -top-3 left-1/4 rotate-[4deg] tape-pattern"></div>
+                                <div class="tape w-16 h-6 -top-3 right-4 rotate-[-10deg] bg-pink-100/60"></div>
+                                
+                                <h3 class="font-script text-3xl text-scrapbook-800 mb-4 border-b-2 border-dashed border-scrapbook-300 pb-2">Things I love about you:</h3>
+                                <ul class="font-handwriting text-2xl leading-relaxed space-y-3 list-none">
+                                    <li class="bg-white/50 px-2 rounded transform rotate-[1deg] shadow-sm"><i class="fas fa-check text-scrapbook-500 text-sm mr-2"></i> Your beautiful eyes</li>
+                                    <li class="bg-white/50 px-2 rounded transform rotate-[-1deg] shadow-sm"><i class="fas fa-check text-scrapbook-500 text-sm mr-2"></i> Your charming auras</li>
+                                    <li class="bg-white/50 px-2 rounded transform rotate-[0.5deg] shadow-sm"><i class="fas fa-check text-scrapbook-500 text-sm mr-2"></i> The way your cheer me</li>
+                                    <li class="bg-white/50 px-2 rounded transform rotate-[-0.5deg] shadow-sm"><i class="fas fa-check text-scrapbook-500 text-sm mr-2"></i> Your endless support</li>
+                                </ul>
+                            </div>
+
+                            <div class="mt-8 bg-white p-4 rounded-xl shadow-lg flex items-center justify-between border-2 border-scrapbook-200 relative transform rotate-[3deg] z-20">
+                                <div class="pushpin -top-2 -left-2"></div>
+                                <div class="tape w-16 h-5 -bottom-2 -right-2 rotate-[-45deg]"></div>
+                                
+                                <svg class="absolute -top-10 right-10 w-12 h-12 text-scrapbook-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                </svg>
+                                <p class="font-handwriting text-scrapbook-500 absolute -top-14 right-2 rotate-[10deg]">Our Jam!</p>
+
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-scrapbook-500 rounded-full flex items-center justify-center text-white shadow-inner">
+                                        <i class="fas fa-music"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-sm text-scrapbook-900">Summer</p>
+                                        <p class="text-xs text-scrapbook-500">Yejun PLAVE</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 text-scrapbook-500 bg-scrapbook-50 px-3 py-2 rounded-full border border-scrapbook-100">
+                                    <i class="fas fa-play cursor-pointer hover:text-scrapbook-800 text-scrapbook-800"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 2 -->
+                <div class="page" id="page2">
+                    <div class="page-front flex flex-col p-6">
+                        <div class="coffee-stain top-10 -right-5 z-0"></div>
+                        <div class="absolute top-1/4 -left-10 w-24 h-40 grid-paper rotate-[15deg] z-0"></div>
+
+                        <div class="relative w-full md:w-4/5 mx-auto mt-6 z-10">
+                            <div class="absolute -inset-2 bg-yellow-50 rotate-[-4deg] shadow-sm border border-yellow-100"></div>
+                            
+                            <div class="polaroid w-full h-64 rotate-[2deg] relative z-10">
+                                <div class="tape w-24 h-8 -top-4 -left-4 rotate-[-45deg] tape-pattern"></div>
+                                <div class="tape w-24 h-8 -bottom-4 -right-4 rotate-[-45deg]"></div>
+                                <div class="pushpin top-2 right-1/2"></div>
+                                
+                                <img src="sc2.png" alt="First Date" onerror="this.src='https://placehold.co/300x300/e0f2fe/0ea5e9?text=First+Date'">
+                                <div class="text-center mt-3">
+                                    <p class="font-handwriting text-2xl font-bold">Our First Date</p>
+                                    <p class="font-body text-sm text-gray-500">December 21th, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <svg class="absolute w-16 h-16 text-scrapbook-500 right-4 top-[45%] rotate-[-30deg] z-20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                        </svg>
+
+                        <div class="mt-12 relative z-20 pl-4">
+                            <div class="absolute inset-0 bg-scrapbook-200 rotate-[3deg] shadow-sm transform translate-x-2 translate-y-2"></div>
+                            <div class="bg-white p-5 relative transform rotate-[-2deg] shadow-md border-l-4 border-scrapbook-400">
+                                <div class="pushpin -top-2 left-4"></div>
+                                <div class="pushpin -bottom-2 right-4"></div>
+                                <p class="font-handwriting text-2xl leading-relaxed text-scrapbook-900">
+                                    That was a chaos before this day, but the moment when you cheering me up, everything just feels so different and we talked for hours...
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="sticker w-8 h-8 text-blue-500 bottom-4 left-4 rotate-12 z-20"><i class="fas fa-star"></i></div>
+                    </div>
+                    
+                    <div class="page-back">
+                        <div class="h-full flex flex-col justify-center items-center p-8 bg-[#fdfbf7] relative">
+                            <div class="absolute top-0 left-0 w-full h-full dot-paper opacity-40 z-0"></div>
+                            <div class="tape w-full h-6 absolute top-1/4 left-0 tape-pattern rotate-[2deg] opacity-60 z-0"></div>
+                            <div class="tape w-32 h-8 absolute bottom-10 left-5 rotate-[-20deg] bg-blue-200/50 z-20"></div>
+
+                            <div class="relative z-10 w-full max-w-[250px]">
+                                <div class="polaroid w-32 h-32 absolute -right-10 -top-16 rotate-[15deg] z-0 shadow-sm opacity-90">
+                                    <img src="https://placehold.co/150x150/e0f2fe/0ea5e9?text=Selfie" alt="Selfie">
+                                </div>
+
+                                <div class="bg-blue-50 border-2 border-dashed border-scrapbook-500 p-4 w-full relative transform rotate-[-4deg] shadow-lg z-10">
+                                    <div class="tape w-16 h-5 -top-2 left-1/2 -translate-x-1/2 rotate-[5deg]"></div>
+                                    <div class="w-6 h-6 bg-[#fdfbf7] rounded-full absolute -left-3 top-1/2 -translate-y-1/2 border-r-2 border-dashed border-scrapbook-500"></div>
+                                    <div class="w-6 h-6 bg-[#fdfbf7] rounded-full absolute -right-3 top-1/2 -translate-y-1/2 border-l-2 border-dashed border-scrapbook-500"></div>
+                                    
+                                    <p class="font-body text-xs text-center text-scrapbook-600 tracking-widest uppercase mb-1">Admit Two</p>
+                                    <h4 class="font-script text-3xl text-center text-scrapbook-900 border-y-2 border-scrapbook-200 py-2 my-2 font-bold">Movie Night</h4>
+                                    <div class="flex justify-between font-body text-[10px] text-scrapbook-500 font-bold">
+                                        <span>Special Guest</span>
+                                        <span>Shiroino, Gosze</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-16 text-center w-full relative z-10 bg-white/70 p-4 transform rotate-[1deg] shadow-sm border border-white">
+                                <div class="pushpin -top-3 left-1/2"></div>
+                                <h2 class="font-handwriting text-5xl text-scrapbook-800 mb-2 inline-block">Our Story</h2>
+                                <div class="tape w-32 h-2 mx-auto bg-scrapbook-300/50 mb-2"></div>
+                                <p class="font-handwriting text-2xl mt-2 text-scrapbook-700">A collection of moments, memories, and shades of blue.</p>
+                            </div>
+                            
+                            <div class="sticker w-10 h-10 text-scrapbook-400 top-10 right-10 rotate-[15deg] z-20"><i class="fas fa-plane"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 1 (Front Cover) -->
+                <div class="page cover" id="page1">
+                    <div class="page-front flex flex-col items-center justify-center p-8">
+                        <div class="absolute inset-0 border-[10px] border-scrapbook-900 opacity-20 m-4 rounded-xl border-dashed z-0"></div>
+                        <div class="absolute inset-0 grid-paper opacity-10 m-6 rounded-xl z-0"></div>
+                        
+                        <div class="tape w-40 h-10 absolute top-10 -left-10 rotate-[45deg] tape-pattern opacity-80 z-20"></div>
+                        <div class="tape w-32 h-8 absolute bottom-10 -right-5 rotate-[-30deg] bg-white/30 z-20"></div>
+                        <div class="tape w-20 h-6 absolute top-1/4 right-5 rotate-[15deg] bg-yellow-200/40 z-20"></div>
+
+                        <div class="relative z-10 w-56 h-56 md:w-64 md:h-64 mb-8">
+                            <div class="absolute inset-0 bg-scrapbook-300 rotate-[6deg] rounded shadow-lg"></div>
+                            <div class="absolute inset-0 dot-paper rotate-[-4deg] rounded shadow-lg border border-scrapbook-200"></div>
+                            
+                            <div class="bg-white p-3 md:p-4 rounded shadow-photo transform rotate-[-1deg] absolute inset-0 z-10">
+                                <div class="tape w-32 h-8 -top-4 left-1/2 -translate-x-1/2 bg-yellow-100/60 rotate-[-2deg] shadow-sm"></div>
+                                <div class="pushpin top-2 left-2"></div>
+                                <div class="pushpin bottom-2 right-2"></div>
+                                <img src="sc1.png" alt="Us" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/300x300/0ea5e9/e0f2fe?text=Cover+Photo'">
+                            </div>
+                        </div>
+
+                        <div class="text-center relative z-20 w-full mt-4">
+                            <div class="absolute inset-0 bg-white/10 backdrop-blur-md transform rotate-[2deg] scale-110 shadow-lg border-y border-white/30"></div>
+                            <div class="relative p-4 transform rotate-[-1deg]">
+                                <div class="tape w-16 h-5 -top-2 left-4 rotate-[-15deg] bg-white/40"></div>
+                                <h1 class="font-script text-6xl md:text-7xl font-bold tracking-wider text-white drop-shadow-xl mb-2">
+                                    Aquaries
+                                </h1>
+                                <p class="font-handwriting text-3xl text-yellow-100 tracking-widest bg-scrapbook-900/40 inline-block px-4 py-1 rounded-sm shadow-inner rotate-[1deg]">
+                                    Our Adventures
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="sticker w-12 h-12 text-scrapbook-500 bottom-20 left-10 rotate-[-20deg] shadow-lg z-20"><i class="fas fa-heart text-2xl"></i></div>
+                        <div class="sticker w-8 h-8 text-yellow-400 top-20 left-12 rotate-[15deg] z-20"><i class="fas fa-star"></i></div>
+                        
+                        <div class="absolute -right-2 top-20 w-6 h-40 bg-scrapbook-200 shadow-xl transform translate-x-1/2 border-l-2 border-scrapbook-100 flex flex-col items-center pt-2 z-10">
+                            <div class="w-2 h-2 rounded-full bg-scrapbook-400 mb-1"></div>
+                            <div class="w-2 h-2 rounded-full bg-scrapbook-400 mb-1"></div>
+                            <div class="w-2 h-2 rounded-full bg-scrapbook-400"></div>
+                        </div>
+                    </div>
+                    <div class="page-back">
+                        <div class="h-full w-full bg-[#e0f2fe] border-8 border-white flex items-center justify-center relative overflow-hidden">
+                            <div class="absolute inset-0 grid-paper opacity-50 z-0"></div>
+                            <div class="tape w-full h-8 absolute top-1/3 -left-4 rotate-[-5deg] tape-pattern z-20"></div>
+                            
+                            <div class="bg-white/80 p-6 rounded-full border border-dashed border-scrapbook-400 transform rotate-[-15deg] shadow-inner relative z-10">
+                                <p class="font-handwriting text-scrapbook-600 text-2xl font-bold">Property of Shiroino</p>
+                                <p class="font-body text-xs text-center text-scrapbook-400 uppercase mt-1">If found, please return</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <script>
-        // API KEY & CONFIG
-        const apiKey = "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"; 
-        const startDate = new Date('2025-12-20T00:00:00');
-        const myPhotos = [
-            { url: "https://i.imgur.com/udD7Nji.png", type: "square" }, 
-            { url: "https://i.imgur.com/bBV9ZX4.png", type: "square" },
-            { url: "https://i.imgur.com/3ZOiyZJ.png", type: "square" },
-            { url: "https://i.imgur.com/HDocgJm.png", type: "square" },
-            { url: "https://i.imgur.com/RstBcML.jpeg", type: "landscape" },
-            { url: "https://i.imgur.com/s3qeweS.jpeg", type: "landscape" },
-            { url: "https://i.imgur.com/wqvxjIR.png", type: "square" },
-            { url: "https://i.imgur.com/TvAXmIB.png", type: "square" }
+        /* === LOGIKA MENU & SURAT === */
+        const letters = [
+            "You are doing amazing today. Remember to be kind to yourself. ✨",
+            "The world is a brighter place because you are in it. Keep shining! 🌟",
+            "Just a reminder: your effort is seen and you are enough just as you are. 💙",
+            "Take a deep breath and let go of the stress. You've got this! 💙"
         ];
 
-        // GREETING & TIMER
-        function updateTimer() {
-            const diff = new Date() - startDate;
-            const days = Math.floor(diff / 86400000);
-            const hours = Math.floor((diff % 86400000) / 3600000);
-            const minutes = Math.floor((diff % 3600000) / 60000);
-            const seconds = Math.floor((diff % 60000) / 1000);
-            document.getElementById('lifetime-timer').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }
+        let typingTimeout;
 
-        function setGreeting() {
-            const hour = new Date().getHours();
-            let text = "Good Morning,";
-            if (hour >= 12 && hour < 17) text = "Good Afternoon,";
-            else if (hour >= 17 && hour < 20) text = "Good Evening,";
-            else if (hour >= 20 || hour < 4) text = "Good Night,";
-            document.getElementById('greeting-text').innerText = text;
-        }
-
-        // AI FUNCTIONS
-        async function callFreeAI(prompt, systemInstruction) {
-            if (!apiKey) return "API key missing...";
-            try {
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        model: "llama-3.1-8b-instant",
-                        messages: [{ role: "system", content: systemInstruction }, { role: "user", content: prompt }],
-                        temperature: 0.9, max_tokens: 150
-                    })
-                });
-                const data = await response.json();
-                return data.choices[0]?.message?.content || "Magic is recharging...";
-            } catch (error) { return "The stars are quiet..."; }
-        }
-
-        async function interpretDream() {
-            const input = document.getElementById('dream-input');
-            const responseDiv = document.getElementById('ai-response');
-            if (!input.value.trim()) return;
-            responseDiv.classList.remove('hidden');
-            responseDiv.innerHTML = 'Brewing magic... <div class="loader"></div>';
-            const result = await callFreeAI(`Shiro says: ${input.value}`, "You are a poetic Dream Alchemist. Give a 1-sentence sweet interpretation with emojis.");
-            responseDiv.innerText = result.trim();
-            input.value = "";
-        }
-
-        async function generateAdventure() {
-            const quoteElement = document.getElementById('morning-quote');
-            quoteElement.innerText = "Consulting the muse...";
-            const result = await callFreeAI("Suggest 1 tiny creative doodle challenge.", "Suggest 1 sentence tiny drawing challenge with emojis.");
-            quoteElement.innerText = `"${result.trim()}"`;
-            for(let i=0; i<5; i++) createParticle();
-        }
-
-        // MODAL & PARTICLES
-        function toggleModal() {
-            const m = document.getElementById('memory-modal');
-            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-        }
-        function closeModal(e) { if(e.target.id === 'memory-modal') toggleModal(); }
-
-        function createParticle() {
-            const p = document.createElement('div');
-            p.classList.add('heart');
-            p.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.animationDuration = (4 + Math.random() * 4) + 's';
-            document.getElementById('background-layer').appendChild(p);
-            setTimeout(() => p.remove(), 8000);
-        }
-
-        document.addEventListener('mousemove', (e) => {
-            if (Math.random() > 0.85) {
-                const s = document.createElement('div');
-                s.className = 'sparkle-mouse';
-                s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px';
-                document.body.appendChild(s);
-                setTimeout(() => s.remove(), 800);
+        function typeWriter(element, text, speed = 50) {
+            clearTimeout(typingTimeout);
+            element.textContent = "";
+            let i = 0;
+            function loop() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    typingTimeout = setTimeout(loop, speed);
+                }
             }
+            loop();
+        }
+
+        function createAestheticParticles() {
+            const container = document.getElementById('particles-container');
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const p = document.createElement('div');
+                    p.classList.add('sparkle-particle');
+                    const s = Math.random() * 8 + 4;
+                    p.style.width = `${s}px`; p.style.height = `${s}px`;
+                    p.style.left = `${Math.random() * 100}%`;
+                    p.style.animationDuration = `${Math.random() * 12 + 8}s`;
+                    container.appendChild(p);
+                }, i * 250);
+            }
+        }
+
+        function updateGreetingByTime() {
+            const hour = new Date().getHours();
+            const titleEl = document.getElementById('greeting-title');
+            const quoteEl = document.getElementById('greeting-quote');
+
+            if (hour >= 5 && hour < 12) {
+                titleEl.textContent = "Good Morning,";
+                quoteEl.textContent = '"A new day begins! May your morning be filled with smiles and a fresh start, Shiroino."';
+            } else if (hour >= 12 && hour < 18) {
+                titleEl.textContent = "Good Afternoon,";
+                quoteEl.textContent = '"Halfway through the day! Take a deep breath, keep your head up, and stay strong, Shiroino."';
+            } else {
+                titleEl.textContent = "Good Night,";
+                quoteEl.textContent = '"The stars are shining, and so is your inner strength. Rest well, Shiroino."';
+            }
+        }
+
+        const audio = document.getElementById('main-audio');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const progressSlider = document.getElementById('audio-progress');
+        const timeDisplay = document.getElementById('time-display');
+
+        audio.addEventListener('loadedmetadata', () => {
+            progressSlider.max = Math.floor(audio.duration);
         });
 
-        // INIT
-        window.onload = () => {
-            setGreeting();
-            updateTimer();
-            setInterval(updateTimer, 1000);
-            setInterval(createParticle, 1500);
-            lucide.createIcons();
+        audio.addEventListener('error', (e) => {
+            console.error("Audio playback error:", e);
+            timeDisplay.innerText = "Error";
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            progressSlider.disabled = true;
+            document.getElementById('play-btn').disabled = true;
+            document.getElementById('play-btn').classList.add('opacity-50', 'cursor-not-allowed');
+        });
 
-            const gallery = document.getElementById('gallery-container');
-            myPhotos.forEach(p => {
-                const div = document.createElement('div');
-                div.className = `${p.type === 'landscape' ? 'photo-landscape' : 'photo-square'} overflow-hidden rounded-xl bg-gray-100`;
-                div.innerHTML = `<img src="${p.url}" class="w-full h-full object-cover hover:scale-105 transition-all duration-500" loading="lazy" onerror="this.src='https://picsum.photos/400/225'">`;
-                gallery.appendChild(div);
+        function toggleLocalAudio() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    playIcon.classList.add('hidden');
+                    pauseIcon.classList.remove('hidden');
+                }).catch(err => {
+                    console.error("Cannot play audio:", err);
+                    console.warn("Maaf, audio tidak dapat diputar. Mungkin file tidak ditemukan atau format tidak didukung.");
+                });
+            } else {
+                audio.pause();
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            }
+        }
+
+        function attemptAutoplay() {
+            audio.play().then(() => {
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            }).catch((err) => {
+                console.log("Autoplay prevented or failed, waiting for user interaction.", err);
+                const startOnInteraction = () => {
+                    audio.play().then(() => {
+                        playIcon.classList.add('hidden');
+                        pauseIcon.classList.remove('hidden');
+                    }).catch(e => console.error("Play on interaction failed:", e));
+                    
+                    document.removeEventListener('click', startOnInteraction);
+                    document.removeEventListener('touchstart', startOnInteraction);
+                };
+                document.addEventListener('click', startOnInteraction);
+                document.addEventListener('touchstart', startOnInteraction);
             });
+        }
+
+        window.onload = () => {
+            createAestheticParticles();
+            audio.volume = 0.25;
+            attemptAutoplay();
+            regenerateCuteLetter();
+            updateGreetingByTime(); 
         };
+
+        audio.addEventListener('timeupdate', () => {
+            progressSlider.value = Math.floor(audio.currentTime);
+            const m = Math.floor(audio.currentTime / 60);
+            const s = Math.floor(audio.currentTime % 60);
+            timeDisplay.innerText = `${m}:${s < 10 ? '0' : ''}${s}/${formatDuration(audio.duration)}`;
+        });
+
+        function formatDuration(d) {
+            if(isNaN(d)) return "0:00";
+            const m = Math.floor(d / 60);
+            const s = Math.floor(d % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        progressSlider.addEventListener('input', () => audio.currentTime = progressSlider.value);
+        
+        function openLetterScreen() { 
+            document.getElementById('main-screen').classList.replace('screen-visible', 'screen-hidden'); 
+            setTimeout(() => document.getElementById('letter-screen').classList.replace('screen-hidden', 'screen-visible'), 300); 
+        }
+        
+        function closeLetterScreen() { 
+            document.getElementById('letter-screen').classList.replace('screen-visible', 'screen-hidden'); 
+            setTimeout(() => document.getElementById('main-screen').classList.replace('screen-hidden', 'screen-visible'), 300); 
+        }
+
+        function openScrapbookScreen() {
+            const uiWrapper = document.getElementById('main-ui-wrapper');
+            const scrapbookWrapper = document.getElementById('scrapbook-screen');
+            
+            uiWrapper.style.opacity = '0';
+            uiWrapper.style.transform = 'scale(0.9) translateY(30px)';
+            uiWrapper.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                scrapbookWrapper.classList.replace('scrapbook-wrapper-hidden', 'scrapbook-wrapper-visible');
+            }, 400); 
+        }
+
+        function closeScrapbookScreen() {
+            const uiWrapper = document.getElementById('main-ui-wrapper');
+            const scrapbookWrapper = document.getElementById('scrapbook-screen');
+            
+            scrapbookWrapper.classList.replace('scrapbook-wrapper-visible', 'scrapbook-wrapper-hidden'); 
+            
+            setTimeout(() => {
+                uiWrapper.style.opacity = '1';
+                uiWrapper.style.transform = 'scale(1) translateY(0)';
+                uiWrapper.style.pointerEvents = 'auto';
+            }, 300); 
+        }
+        
+        function regenerateCuteLetter() { 
+            const msgElement = document.getElementById('typed-message');
+            const randomMsg = letters[Math.floor(Math.random() * letters.length)];
+            typeWriter(msgElement, randomMsg);
+        }
+
+        /* === LOGIKA BUKU SCRAPBOOK 3D === */
+        document.addEventListener('DOMContentLoaded', () => {
+            // Memilih semua halaman yang BISA dibalik (back-cover kita kecualikan agar diam di kanan)
+            const pages = document.querySelectorAll('.page:not(.back-cover)'); 
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            const pagesArray = Array.from(pages).reverse();
+            
+            let currentPageIndex = 0;
+            const totalPages = pagesArray.length;
+
+            function setupPages() {
+                pagesArray.forEach((page, index) => {
+                    page.style.zIndex = totalPages - index;
+                });
+                updateButtons();
+            }
+
+            function nextPage() {
+                if (currentPageIndex < totalPages) {
+                    const pageToFlip = pagesArray[currentPageIndex];
+                    
+                    pageToFlip.classList.add('flipped');
+                    
+                    setTimeout(() => {
+                        pageToFlip.style.zIndex = currentPageIndex + 1;
+                    }, 400); 
+                    
+                    currentPageIndex++;
+                    updateButtons();
+                }
+            }
+
+            function prevPage() {
+                if (currentPageIndex > 0) {
+                    currentPageIndex--;
+                    const pageToUnflip = pagesArray[currentPageIndex];
+                    
+                    pageToUnflip.style.zIndex = totalPages - currentPageIndex;
+                    pageToUnflip.classList.remove('flipped');
+                    
+                    updateButtons();
+                }
+            }
+
+            function updateButtons() {
+                if(prevBtn) prevBtn.disabled = currentPageIndex === 0;
+                if(nextBtn) nextBtn.disabled = currentPageIndex === totalPages;
+            }
+
+            if(nextBtn) nextBtn.addEventListener('click', nextPage);
+            if(prevBtn) prevBtn.addEventListener('click', prevPage);
+
+            const scrapbook = document.getElementById('scrapbook');
+            if (scrapbook) {
+                scrapbook.addEventListener('click', (e) => {
+                    if(e.target.closest('button')) return;
+                    const bookRect = scrapbook.getBoundingClientRect();
+                    const clickX = e.clientX - bookRect.left;
+                    if (clickX > bookRect.width / 2) {
+                        nextPage();
+                    } else {
+                        prevPage();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (document.getElementById('scrapbook-screen').classList.contains('scrapbook-wrapper-visible')) {
+                    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+                        nextPage();
+                    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                        prevPage();
+                    }
+                }
+            });
+
+            setupPages();
+        });
     </script>
 </body>
 </html>
